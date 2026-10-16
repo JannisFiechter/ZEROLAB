@@ -229,8 +229,8 @@ details.blk[open]>summary::after{content:"−"}
 
 /* Zero-Leiste kompakt (installierte App, beim Scrollen) */
 .zb-sentinel{height:0;margin-bottom:-14px}
-.zerobar.compact{padding-block:8px;gap:0}
-.zerobar.compact .zb-tag,.zerobar.compact #zEq,.zerobar.compact .zb-slide,.zerobar.compact .help,.zerobar.compact .helptext,.zerobar.compact .stats,.zerobar.compact .cmpbar{display:none!important}
+.zerobar.compact{padding-block:8px;gap:6px}
+.zerobar.compact .zb-tag,.zerobar.compact #zEq,.zerobar.compact .zb-slide,.zerobar.compact .help,.zerobar.compact .helptext,.zerobar.compact .stats,.zerobar.compact .cmpbar>.lbl{display:none!important}
 .zerobar.compact .zb-main{flex-wrap:nowrap;justify-content:space-between;gap:8px}
 .zerobar.compact .zb-main>div:last-child{flex-wrap:nowrap!important}
 .zerobar.compact .zb-num button{width:32px;height:32px;font-size:18px}
@@ -253,3 +253,16 @@ body.fs-open{overflow:hidden}
 .card.fs .tgt-host svg{max-height:none;height:100%}
 .card.fs .graph-host{display:flex;align-items:center}
 .card.fs .graph-host svg{max-height:100%}
+
+/* Kompakte Leiste: Varianten als eine scrollbare Zeile, weicher Übergang */
+.zerobar.compact .cmpbar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:1px}
+.zerobar.compact .cmpbar::-webkit-scrollbar{display:none}
+.zerobar.compact .vchip{flex:none}
+.zerobar.zb-anim{overflow:hidden;transition:height .26s cubic-bezier(.2,.7,.2,1),margin-bottom .26s cubic-bezier(.2,.7,.2,1),padding .26s ease}
+.zerobar.zb-anim>*{animation:zbfade .26s ease}
+@keyframes zbfade{from{opacity:0}to{opacity:1}}
+
+/* Flugbahn im Vollbild hochkant: ins Panorama drehen */
+@media (orientation:portrait){
+  .card.fs.fs-graph{inset:auto;top:0;left:0;width:100vh;width:100dvh;height:100vw;transform-origin:top left;transform:translateX(100vw) rotate(90deg);padding:max(12px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-top,0px))}
+}

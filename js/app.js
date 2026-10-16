@@ -477,7 +477,7 @@ function renderSnaps(R){
 }
 function bindHover(){
  const svg=$('#graphHost svg');if(!svg||!GMAP)return;const area=svg.querySelector('#hvArea'),line=svg.querySelector('#hvLine');
- const mv=e=>{const r=svg.getBoundingClientRect();const pt=(e.touches?e.touches[0]:e);const x=(pt.clientX-r.left)/r.width*GMAP.W;const d=Math.max(0,Math.min(GMAP.xMaxD,(x-GMAP.ml)/GMAP.pw*GMAP.xMaxD));
+ const mv=e=>{const r=svg.getBoundingClientRect();const pt=(e.touches?e.touches[0]:e);const x=(fsRot()?(pt.clientY-r.top)/r.height:(pt.clientX-r.left)/r.width)*GMAP.W;const d=Math.max(0,Math.min(GMAP.xMaxD,(x-GMAP.ml)/GMAP.pw*GMAP.xMaxD));
   line.setAttribute('x1',GMAP.X(d));line.setAttribute('x2',GMAP.X(d));line.setAttribute('visibility','visible');
   const m=U.toM(d);$('#readout').innerHTML=`<span>${fx(d,0)} ${U.dU()}</span>`+LAST.list.map(s=>{const y=s.res.ok?at(s.res.y,m):null;return `<span style="color:${SCREEN.ser(s.ci)}">${esc(vl(s))} ${y==null?'·':sgn(U.drop(y),1)+' '+U.dropU()}</span>`;}).join('');};
  area.addEventListener('mousemove',mv);area.addEventListener('touchmove',e=>{mv(e);},{passive:true});area.addEventListener('mouseleave',()=>line.setAttribute('visibility','hidden'));
@@ -675,21 +675,34 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#setMenu').hidd
 /* ---------- Zero-Leiste kompakt, sobald sie beim Scrollen klebt (nur installierte App) ---------- */
 const ZB=document.querySelector('.zerobar');
 const isApp=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
-/* margin-bottom gleicht die Höhendifferenz aus, damit der Inhalt darunter nicht springt */
-function zbCompact(on){if(on===ZB.classList.contains('compact'))return;
- if(on){const h=ZB.offsetHeight;ZB.classList.add('compact');ZB.style.marginBottom=(h-ZB.offsetHeight)+'px';}
- else{ZB.classList.remove('compact');ZB.style.marginBottom='';}}
+/* Höhe und margin-bottom laufen gegengleich animiert: die Summe bleibt konstant, der Inhalt darunter springt nicht */
+let zbT=0;
+function zbCompact(on,instant){if(on===ZB.classList.contains('compact')&&!instant)return;
+ const cur=ZB.offsetHeight,curM=parseFloat(ZB.style.marginBottom)||0;
+ clearTimeout(zbT);ZB.classList.remove('zb-anim');ZB.style.height='';ZB.style.marginBottom='';
+ ZB.classList.remove('compact');const hFull=ZB.offsetHeight;ZB.classList.add('compact');const hMin=ZB.offsetHeight;
+ ZB.classList.toggle('compact',on);const m=on?hFull-hMin:0;
+ if(instant){ZB.style.marginBottom=m?m+'px':'';return;}
+ ZB.style.height=cur+'px';ZB.style.marginBottom=curM+'px';void ZB.offsetHeight;
+ ZB.classList.add('zb-anim');ZB.style.height=(on?hMin:hFull)+'px';ZB.style.marginBottom=m+'px';
+ zbT=setTimeout(()=>{ZB.classList.remove('zb-anim');ZB.style.height='';ZB.style.marginBottom=m?m+'px':'';},280);}
 let zbStuck=false;
 let zbRaf=0;function zbCheck(){zbRaf=0;zbStuck=$('#zbSentinel').getBoundingClientRect().top<0;zbCompact(zbStuck&&isApp());}
 window.addEventListener('scroll',()=>{if(!zbRaf)zbRaf=requestAnimationFrame(zbCheck);},{passive:true});
-window.addEventListener('resize',()=>{if(ZB.classList.contains('compact')){zbCompact(false);zbCompact(zbStuck&&isApp());}});
+window.addEventListener('resize',()=>{if(ZB.classList.contains('compact'))zbCompact(zbStuck&&isApp(),true);});
 
 /* ---------- Vollbild für Scheibe und Flugbahn ---------- */
 let FS=null;
 function fsLabels(){document.querySelectorAll('[data-fs]').forEach(b=>{const on=!!FS&&FS.contains(b);b.setAttribute('aria-pressed',String(on));const t=tr(on?'fs.close':'fs.open');b.setAttribute('aria-label',t);b.title=t;});}
-function fsOpen(card){FS=card;card.classList.add('fs');document.body.classList.add('fs-open');
- try{if(card.requestFullscreen&&!document.fullscreenElement)card.requestFullscreen().catch(()=>{});}catch(e){}fsLabels();}
-function fsClose(){if(!FS)return;FS.classList.remove('fs');document.body.classList.remove('fs-open');FS=null;
+/* Overlay per CSS (funktioniert auch auf dem iPhone); natives Vollbild auf der ganzen Seite, wo verfügbar.
+ Flugbahn: auf Android Querformat sperren, sonst hochkant per CSS ins Panorama gedreht (.fs-graph). */
+const fsRot=()=>!!FS&&FS.classList.contains('fs-graph')&&matchMedia('(orientation: portrait)').matches;
+function fsOpen(card){FS=card;card.classList.add('fs');card.classList.toggle('fs-graph',!!card.querySelector('#graphHost'));document.body.classList.add('fs-open');
+ const el=document.documentElement;
+ try{if(el.requestFullscreen&&!document.fullscreenElement)el.requestFullscreen().then(()=>{if(FS===card&&card.classList.contains('fs-graph')&&screen.orientation&&screen.orientation.lock)return screen.orientation.lock('landscape');}).catch(()=>{});}catch(e){}
+ fsLabels();}
+function fsClose(){if(!FS)return;FS.classList.remove('fs','fs-graph');document.body.classList.remove('fs-open');FS=null;
+ try{if(screen.orientation&&screen.orientation.unlock)screen.orientation.unlock();}catch(e){}
  try{if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});}catch(e){}fsLabels();}
 document.querySelectorAll('[data-fs]').forEach(b=>b.addEventListener('click',()=>{const c=b.closest('.card');if(FS===c)fsClose();else{fsClose();fsOpen(c);}}));
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&FS)fsClose();});
