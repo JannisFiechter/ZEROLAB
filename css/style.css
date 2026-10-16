@@ -282,10 +282,10 @@ body.fs-open{overflow:hidden}
 html,body,button,input,select,label,a{touch-action:manipulation}
 
 /* App-Modus (installierte PWA): fühlt sich wie eine native App an */
-html.app{touch-action:pan-x pan-y;overscroll-behavior:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
-html.app body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
-html.app button,html.app summary,html.app label,html.app .seg,html.app .chip,html.app .vchip,html.app .lbl,html.app h2,html.app .card-h,html.app .zb-tag,html.app .brand,html.app .tgt-host,html.app .graph-host,html.app .legend,html.app .stat{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-html.app input,html.app select,html.app textarea{-webkit-user-select:text;user-select:text}
+html.is-app{touch-action:pan-x pan-y;overscroll-behavior:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html.is-app body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+html.is-app button,html.is-app summary,html.is-app label,html.is-app .seg,html.is-app .chip,html.is-app .vchip,html.is-app .lbl,html.is-app h2,html.is-app .card-h,html.is-app .zb-tag,html.is-app .brand,html.is-app .tgt-host,html.is-app .graph-host,html.is-app .legend,html.is-app .stat{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+html.is-app input,html.is-app select,html.is-app textarea{-webkit-user-select:text;user-select:text}
 
 /* Aufklappbare Setup-Boxen (Munition, Lauf, Visierung) */
 details.blk.fold{display:block}
@@ -295,3 +295,13 @@ details.blk.fold>summary .help{margin-left:auto}
 .fold>.blk-body{display:flex;flex-direction:column;gap:10px;margin-top:10px}
 /* Kein Markieren beim schnellen Auf- und Zuklappen (Inhalt bleibt kopierbar) */
 details.blk>summary{-webkit-user-select:none;user-select:none}
+
+/* Hilfe-Knopf nur bei offener Box */
+details.blk.fold:not([open])>summary .help{display:none}
+
+/* Zero-Leiste: Vergrössern schneller als Verkleinern */
+.zerobar.zb-anim.zb-grow{transition-duration:.18s}
+.zerobar.zb-anim.zb-grow>*{animation-duration:.18s}
+/* App: in der vollen Zero-Leiste Varianten auf eigener Zeile unter dem Label */
+html.is-app .zerobar:not(.compact) .cmpbar{gap:8px 6px;padding-top:10px;border-top:1px solid var(--line)}
+html.is-app .zerobar:not(.compact) .cmpbar>.lbl{flex:1 0 100%}

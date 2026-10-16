@@ -20,9 +20,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<link rel="stylesheet" href="css/style.css?v=10">
-<script src="js/i18n.js?v=10" defer></script>
-<script src="js/app.js?v=10" defer></script>
+<link rel="stylesheet" href="css/style.css?v=11">
+<script src="js/i18n.js?v=11" defer></script>
+<script src="js/app.js?v=11" defer></script>
 </head>
 <body>
 
@@ -99,8 +99,9 @@
     </div>
     </details>
 
-    <details class="blk" id="detEnv">
-      <summary data-i18n="env.h">Umgebung und Feinheiten</summary>
+    <details class="blk fold" id="detEnv">
+      <summary class="blk-head"><h2 data-i18n="env.h">Umgebung und Feinheiten</h2></summary>
+      <div class="blk-body">
       <p class="hint" data-i18n="env.hint">Standard ist ICAO (Meereshöhe, 15 °C). Unter 600 m ü. M. ist der Einfluss auf die Zero-Wahl gering.</p>
       <div class="row2">
         <label class="fld"><span><span data-i18n="env.alt">Höhe ü. M.</span> <em id="uAlt">m</em></span><input id="inAlt" inputmode="decimal" autocomplete="off"></label>
@@ -108,8 +109,8 @@
       </div>
       <label class="fld"><span><span data-i18n="env.off">Treffpunkt auf Zero-Distanz</span> <em id="uOff">cm</em></span><input id="inOff" inputmode="decimal" autocomplete="off"></label>
       <p class="hint" data-i18n="env.offHint">Positiv = Treffer liegt auf der Zero-Distanz über dem Haltepunkt (z. B. «4 cm hoch auf 100 m»).</p>
+      </div>
     </details>
-    <p class="store" id="storeNote"></p>
   </aside>
 
   <main class="work">

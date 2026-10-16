@@ -398,7 +398,6 @@ function renderSetup(){
  // Zero
  const zr=$('#zRange');zr.min=5;zr.max=U.m?600:650;zr.step=1;
  $('#zUnit').textContent=U.dU();
- $('#storeNote').textContent=Store.mode==='local'?tr('store.local'):tr('store.mem');
  renderVCalc();
 }
 function renderVCalc(){
@@ -718,19 +717,26 @@ function zbCompact(on,instant){if(on===ZB.classList.contains('compact')&&!instan
  const cur=ZB.offsetHeight,curM=parseFloat(ZB.style.marginBottom)||0;
  clearTimeout(zbT);ZB.classList.remove('zb-anim');ZB.style.height='';ZB.style.marginBottom='';
  ZB.classList.remove('compact');const hFull=ZB.offsetHeight;ZB.classList.add('compact');const hMin=ZB.offsetHeight;
- ZB.classList.toggle('compact',on);const m=on?hFull-hMin:0;
+ zbMin=hMin;ZB.classList.toggle('compact',on);const m=on?hFull-hMin:0;
  if(instant){ZB.style.marginBottom=m?m+'px':'';return;}
  ZB.style.height=cur+'px';ZB.style.marginBottom=curM+'px';void ZB.offsetHeight;
- ZB.classList.add('zb-anim');ZB.style.height=(on?hMin:hFull)+'px';ZB.style.marginBottom=m+'px';
- zbT=setTimeout(()=>{ZB.classList.remove('zb-anim');ZB.style.height='';ZB.style.marginBottom=m?m+'px':'';},280);}
-let zbStuck=false;
-let zbRaf=0;function zbCheck(){zbRaf=0;zbStuck=$('#zbSentinel').getBoundingClientRect().top<0;zbCompact(zbStuck&&isApp());}
+ ZB.classList.toggle('zb-grow',!on);ZB.classList.add('zb-anim');ZB.style.height=(on?hMin:hFull)+'px';ZB.style.marginBottom=m+'px';
+ zbT=setTimeout(()=>{ZB.classList.remove('zb-anim');ZB.style.height='';ZB.style.marginBottom=m?m+'px':'';zbCheck();},280);}
+/* Umschaltpunkt = Höhendifferenz (Platzhalter): kompakt erst, wenn der Inhalt unter der vollen Leiste durchgescrollt ist,
+ gross genau dann, wenn der Platzhalter beim Hochscrollen ins Bild käme. Kein Leerraum, kein Flackern. */
+let zbMin=0,zbRaf=0;const ZB_PAD=120;/* Vorlauf: Vergrössern beginnt, bevor der Platzhalter sichtbar wird */
+function zbGap(){
+ if(ZB.classList.contains('compact'))return parseFloat(ZB.style.marginBottom)||0;
+ if(!zbMin){ZB.classList.add('compact');zbMin=ZB.offsetHeight;ZB.classList.remove('compact');}
+ return Math.max(0,ZB.offsetHeight-zbMin);}
+function zbCheck(){zbRaf=0;if(!isApp()||ZB.classList.contains('zb-anim'))return;
+ zbCompact($('#zbSentinel').getBoundingClientRect().top<-(zbGap()+ZB_PAD));}
 window.addEventListener('scroll',()=>{if(!zbRaf)zbRaf=requestAnimationFrame(zbCheck);},{passive:true});
-window.addEventListener('resize',()=>{if(ZB.classList.contains('compact'))zbCompact(zbStuck&&isApp(),true);});
+window.addEventListener('resize',()=>{zbMin=0;if(ZB.classList.contains('compact'))zbCompact(true,true);zbCheck();});
 
 /* ---------- App-Modus (installierte PWA): kein Zoom, keine Browser-Gesten ---------- */
 if(isApp()){
- document.documentElement.classList.add('app');
+ document.documentElement.classList.add('is-app');
  const vp=document.querySelector('meta[name=viewport]');
  if(vp)vp.content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover';
  /* iOS ignoriert user-scalable: Zwei-Finger-Gesten direkt abfangen */
