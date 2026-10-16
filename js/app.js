@@ -105,8 +105,8 @@ function loadName(cal,id,name){return cal==='custom'?name:trx('lib.name.'+id,nam
 function kFor(cal,loadId){if(cal==='custom'){const l=findLoad('custom',loadId);return l&&l.k||8;}const c=LIB.find(c=>c.id===cal);return c?c.k:8;}
 function calK(cal){return kFor(cal,S.loadId);}
 
-/* ---------- Speicher: Cookies (24 h), Fallback Browser-Speicher ---------- */
-const Store={mode:'mem',TTL:86400,
+/* ---------- Speicher: Cookies (1 Jahr), Fallback Browser-Speicher ---------- */
+const Store={mode:'mem',TTL:31536000,
  init(){
   const sec=location.protocol==='https:';
   const attr=sec?';SameSite=None;Secure':';SameSite=Lax';
@@ -392,7 +392,6 @@ function renderSetup(){
  // Zero
  const zr=$('#zRange');zr.min=5;zr.max=U.m?600:650;zr.step=1;
  $('#zUnit').textContent=U.dU();
- $('#storeNote').textContent=Store.mode==='cookie'?tr('store.cookie'):Store.mode==='local'?tr('store.local'):tr('store.mem');
  renderVCalc();
 }
 function renderVCalc(){
