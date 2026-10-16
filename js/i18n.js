@@ -179,9 +179,7 @@ en:{
 const LANGS=['de','en'],LOCALES={de:'de-CH',en:'en-GB'},LANG_KEY='zerolab-lang';
 let LANG=(()=>{
  try{const s=localStorage.getItem(LANG_KEY);if(LANGS.includes(s))return s;}catch(e){}
- const l=navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||''];
- for(const x of l){const p=String(x).slice(0,2).toLowerCase();if(LANGS.includes(p))return p;}
- return 'de';})();
+ return 'en';})();
 const i18nFill=(s,p)=>p?s.replace(/\{(\w+)\}/g,(m,k)=>p[k]!==undefined?p[k]:m):s;
 function tr(key,p){let s=I18N[LANG][key];if(s===undefined)s=I18N.de[key];return s===undefined?key:i18nFill(s,p);}
 function trx(key,de,p){const s=LANG==='de'?undefined:I18N[LANG][key];return s===undefined?de:i18nFill(s,p);}
