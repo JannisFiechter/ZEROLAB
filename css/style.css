@@ -280,3 +280,9 @@ body.fs-open{overflow:hidden}
 
 /* Kein Doppeltipp-Zoom (v. a. bei schnellem Tippen auf − / +); Zwei-Finger-Zoom bleibt möglich */
 html,body,button,input,select,label,a{touch-action:manipulation}
+
+/* App-Modus (installierte PWA): fühlt sich wie eine native App an */
+html.app{touch-action:pan-x pan-y;overscroll-behavior:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html.app body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+html.app button,html.app summary,html.app label,html.app .seg,html.app .chip,html.app .vchip,html.app .lbl,html.app h2,html.app .card-h,html.app .zb-tag,html.app .brand,html.app .tgt-host,html.app .graph-host,html.app .legend,html.app .stat{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+html.app input,html.app select,html.app textarea{-webkit-user-select:text;user-select:text}

@@ -725,6 +725,16 @@ let zbRaf=0;function zbCheck(){zbRaf=0;zbStuck=$('#zbSentinel').getBoundingClien
 window.addEventListener('scroll',()=>{if(!zbRaf)zbRaf=requestAnimationFrame(zbCheck);},{passive:true});
 window.addEventListener('resize',()=>{if(ZB.classList.contains('compact'))zbCompact(zbStuck&&isApp(),true);});
 
+/* ---------- App-Modus (installierte PWA): kein Zoom, keine Browser-Gesten ---------- */
+if(isApp()){
+ document.documentElement.classList.add('app');
+ const vp=document.querySelector('meta[name=viewport]');
+ if(vp)vp.content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover';
+ /* iOS ignoriert user-scalable: Zwei-Finger-Gesten direkt abfangen */
+ ['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
+ document.addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1)e.preventDefault();},{passive:false});
+}
+
 /* ---------- Vollbild für Scheibe und Flugbahn ---------- */
 let FS=null;
 function fsLabels(){document.querySelectorAll('[data-fs]').forEach(b=>{const on=!!FS&&FS.contains(b);b.setAttribute('aria-pressed',String(on));const t=tr(on?'fs.close':'fs.open');b.setAttribute('aria-label',t);b.title=t;});}
