@@ -277,3 +277,6 @@ body.fs-open{overflow:hidden}
 .priv-menu h3{margin:0;font-family:var(--f-display);font-weight:600;font-size:16px;letter-spacing:.06em;text-transform:uppercase}
 .priv-menu p{margin:0}
 .priv-menu a{color:var(--accent)}
+
+/* Kein Doppeltipp-Zoom (v. a. bei schnellem Tippen auf − / +); Zwei-Finger-Zoom bleibt möglich */
+html,body,button,input,select,label,a{touch-action:manipulation}

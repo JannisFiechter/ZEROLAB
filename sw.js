@@ -1,9 +1,9 @@
 /* Schussendlich: ZeroLab, Service Worker
  App-Shell beim Installieren cachen, Google Fonts und jsPDF zur Laufzeit.
  Bei jeder Änderung an Shell-Dateien VERSION erhöhen (und ?v= in index.html). */
-const VERSION='zerolab-v7';
+const VERSION='zerolab-v8';
 const SHELL=VERSION+'-shell',RUNTIME=VERSION+'-runtime';
-const ASSETS=['./','index.html','css/style.css?v=7','js/i18n.js?v=7','js/app.js?v=7','manifest.webmanifest',
+const ASSETS=['./','index.html','css/style.css?v=8','js/i18n.js?v=8','js/app.js?v=8','manifest.webmanifest',
  'favicon.svg','favicon.ico','icons/icon-192.png','icons/icon-512.png','icons/icon-512-maskable.png','icons/apple-touch-icon.png'];
 const FONT_CSS='https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap';
 const JSPDF='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
