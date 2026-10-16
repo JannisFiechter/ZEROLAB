@@ -672,5 +672,29 @@ $('#btnSet').addEventListener('click',()=>setMenu($('#setMenu').hidden));
 document.addEventListener('click',e=>{if(!$('#setMenu').hidden&&!e.target.closest('.set-wrap'))setMenu(false);});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#setMenu').hidden){setMenu(false);$('#btnSet').focus();}});
 
+/* ---------- Zero-Leiste kompakt, sobald sie beim Scrollen klebt (nur installierte App) ---------- */
+const ZB=document.querySelector('.zerobar');
+const isApp=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+/* margin-bottom gleicht die Höhendifferenz aus, damit der Inhalt darunter nicht springt */
+function zbCompact(on){if(on===ZB.classList.contains('compact'))return;
+ if(on){const h=ZB.offsetHeight;ZB.classList.add('compact');ZB.style.marginBottom=(h-ZB.offsetHeight)+'px';}
+ else{ZB.classList.remove('compact');ZB.style.marginBottom='';}}
+let zbStuck=false;
+let zbRaf=0;function zbCheck(){zbRaf=0;zbStuck=$('#zbSentinel').getBoundingClientRect().top<0;zbCompact(zbStuck&&isApp());}
+window.addEventListener('scroll',()=>{if(!zbRaf)zbRaf=requestAnimationFrame(zbCheck);},{passive:true});
+window.addEventListener('resize',()=>{if(ZB.classList.contains('compact')){zbCompact(false);zbCompact(zbStuck&&isApp());}});
+
+/* ---------- Vollbild für Scheibe und Flugbahn ---------- */
+let FS=null;
+function fsLabels(){document.querySelectorAll('[data-fs]').forEach(b=>{const on=!!FS&&FS.contains(b);b.setAttribute('aria-pressed',String(on));const t=tr(on?'fs.close':'fs.open');b.setAttribute('aria-label',t);b.title=t;});}
+function fsOpen(card){FS=card;card.classList.add('fs');document.body.classList.add('fs-open');
+ try{if(card.requestFullscreen&&!document.fullscreenElement)card.requestFullscreen().catch(()=>{});}catch(e){}fsLabels();}
+function fsClose(){if(!FS)return;FS.classList.remove('fs');document.body.classList.remove('fs-open');FS=null;
+ try{if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});}catch(e){}fsLabels();}
+document.querySelectorAll('[data-fs]').forEach(b=>b.addEventListener('click',()=>{const c=b.closest('.card');if(FS===c)fsClose();else{fsClose();fsOpen(c);}}));
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&FS)fsClose();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&FS)fsClose();});
+$('#segLang').addEventListener('click',()=>fsLabels());
+
 /* ---------- Offline: Service Worker ---------- */
 if('serviceWorker' in navigator&&location.protocol!=='file:')window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});

@@ -226,3 +226,30 @@ details.blk[open]>summary::after{content:"−"}
   .top-actions .seg{display:flex}
   .top-actions .seg button{flex:1;padding-block:8px}
 }
+
+/* Zero-Leiste kompakt (installierte App, beim Scrollen) */
+.zb-sentinel{height:0;margin-bottom:-14px}
+.zerobar.compact{padding-block:8px;gap:0}
+.zerobar.compact .zb-tag,.zerobar.compact #zEq,.zerobar.compact .zb-slide,.zerobar.compact .help,.zerobar.compact .helptext,.zerobar.compact .stats,.zerobar.compact .cmpbar{display:none!important}
+.zerobar.compact .zb-main{flex-wrap:nowrap;justify-content:space-between;gap:8px}
+.zerobar.compact .zb-main>div:last-child{flex-wrap:nowrap!important}
+.zerobar.compact .zb-num button{width:32px;height:32px;font-size:18px}
+.zerobar.compact .zb-num input{width:72px;height:38px;font-size:26px}
+.zerobar.compact .zb-unit{font-size:17px;min-width:0}
+@media (max-width:480px){
+  .zerobar.compact{padding-inline:10px}
+  .zerobar.compact .zb-num input{width:62px}
+  .zerobar.compact #btnPdf,.zerobar.compact #btnSnap{font-size:0;padding-inline:10px}
+  .zerobar.compact #btnPdf::after,.zerobar.compact #btnSnap::after{content:attr(data-short);font-size:13px}
+}
+
+/* Vollbild für Scheibe und Flugbahn */
+.card .icon-btn{height:32px;width:34px}
+.fs-btn .fs-out,.fs-btn[aria-pressed="true"] .fs-in{display:none}
+.fs-btn[aria-pressed="true"] .fs-out{display:block}
+body.fs-open{overflow:hidden}
+.card.fs{position:fixed;inset:0;z-index:100;margin:0;border:0;border-radius:0;overflow:auto;padding:max(12px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(12px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.card.fs .tgt-host,.card.fs .graph-host{flex:1 1 auto;min-height:0}
+.card.fs .tgt-host svg{max-height:none;height:100%}
+.card.fs .graph-host{display:flex;align-items:center}
+.card.fs .graph-host svg{max-height:100%}

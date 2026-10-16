@@ -7,7 +7,7 @@ const I18N={
 de:{
  'num.thou':'’',
  'brand.sub':'Zero-Distanz simulieren, Treffpunktlage vergleichen',
- 'lang.aria':'Sprache','set.aria':'Einstellungen','set.lang':'Sprache','set.wipeHint':'Löscht alle gespeicherten Einstellungen, Varianten und eigenen Laborierungen in diesem Browser.',
+ 'lang.aria':'Sprache','fs.open':'Vollbild','fs.close':'Vollbild beenden','pdf.short':'PDF','snap.short':'+ Variante','set.aria':'Einstellungen','set.lang':'Sprache','set.wipeHint':'Löscht alle gespeicherten Einstellungen, Varianten und eigenen Laborierungen in diesem Browser.',
  'units.aria':'Einheiten','units.metric':'Metrisch','units.imperial':'Imperial',
  'angle.aria':'Winkeleinheit',
  'pdf.title':'Mit Vergleichen wird der Vergleich gedruckt, sonst die aktuelle Einstellung',
@@ -81,7 +81,7 @@ de:{
 en:{
  'num.thou':',',
  'brand.sub':'Simulate zero distance, compare point of impact',
- 'lang.aria':'Language','set.aria':'Settings','set.lang':'Language','set.wipeHint':'Deletes all saved settings, variants and custom loads in this browser.',
+ 'lang.aria':'Language','fs.open':'Full screen','fs.close':'Exit full screen','pdf.short':'PDF','snap.short':'+ Variant','set.aria':'Settings','set.lang':'Language','set.wipeHint':'Deletes all saved settings, variants and custom loads in this browser.',
  'units.aria':'Units','units.metric':'Metric','units.imperial':'Imperial',
  'angle.aria':'Angular unit',
  'pdf.title':'With variants shown, the comparison is printed, otherwise the current setup',

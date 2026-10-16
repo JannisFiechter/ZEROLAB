@@ -20,9 +20,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<link rel="stylesheet" href="css/style.css?v=3">
-<script src="js/i18n.js?v=3" defer></script>
-<script src="js/app.js?v=3" defer></script>
+<link rel="stylesheet" href="css/style.css?v=4">
+<script src="js/i18n.js?v=4" defer></script>
+<script src="js/app.js?v=4" defer></script>
 </head>
 <body>
 
@@ -104,6 +104,7 @@
   </aside>
 
   <main class="work">
+    <div class="zb-sentinel" id="zbSentinel" aria-hidden="true"></div>
     <section class="zerobar" aria-label="Zero-Distanz" data-i18n-attr="aria-label:zero.aria">
       <div class="zb-main">
         <div class="zb-num">
@@ -119,8 +120,8 @@
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
           <button type="button" class="help" data-help="zero" aria-expanded="false" aria-label="Hilfe Zero" data-i18n-attr="aria-label:zero.help.aria">?</button>
-          <button type="button" class="btn" id="btnPdf" title="Mit Vergleichen wird der Vergleich gedruckt, sonst die aktuelle Einstellung" data-i18n-attr="title:pdf.title">PDF erstellen</button>
-          <button type="button" class="btn accent" id="btnSnap" title="Kopiert die aktuelle Variante, du bearbeitest danach die Kopie" data-i18n-attr="title:snap.title" data-i18n="snap.btn">Neue Variante</button>
+          <button type="button" class="btn" id="btnPdf" title="Mit Vergleichen wird der Vergleich gedruckt, sonst die aktuelle Einstellung" data-i18n-attr="title:pdf.title;data-short:pdf.short">PDF erstellen</button>
+          <button type="button" class="btn accent" id="btnSnap" title="Kopiert die aktuelle Variante, du bearbeitest danach die Kopie" data-i18n-attr="title:snap.title;data-short:snap.short" data-i18n="snap.btn">Neue Variante</button>
         </div>
       </div>
       <p class="helptext" id="help-zero" hidden data-i18n="zero.help">Varianten: Du bearbeitest immer genau eine Variante (dunkel hinterlegt). «Neue Variante» kopiert sie, danach änderst du die Kopie und die übrigen bleiben als Vergleich stehen. Klick auf eine Variante zum Bearbeiten, Auge zum Ein- und Ausblenden, × zum Löschen. Die Zero-Distanz ist die Distanz, auf der Treffpunkt und Haltepunkt zusammenfallen. Weil die Optik über dem Lauf sitzt, kreuzt die Flugbahn die Visierlinie zweimal: nahes und fernes Zero. Faustregeln für Karabiner: 50 m Zero ergibt ein fernes Zero um 200 m, flache Flugbahn bis etwa 250 m. 100 m für Präzision, 25 m für Kurzdistanz. Ziel: die grüne Zonen-Angabe möglichst weit. Mit «Zum Vergleich» merkst du dir eine Variante und spielst weiter.</p>
@@ -135,6 +136,7 @@
           <div class="card-tools">
             <select id="selTarget" aria-label="Scheibe" data-i18n-attr="aria-label:tgt.h"></select>
             <button type="button" class="help" data-help="target" aria-expanded="false" aria-label="Hilfe Scheibe" data-i18n-attr="aria-label:tgt.help.aria">?</button>
+            <button type="button" class="btn icon-btn fs-btn" data-fs aria-pressed="false" aria-label="Vollbild" title="Vollbild" data-i18n-attr="aria-label:fs.open;title:fs.open"><svg class="fs-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><svg class="fs-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg></button>
           </div>
         </div>
         <div class="card-tools" id="ringTools" hidden>
@@ -157,7 +159,7 @@
 
       </section>
       <section class="card">
-        <div class="card-top"><span class="card-h" data-i18n="graph.h">Flugbahn zur Visierlinie</span><div class="legend" id="legendG"></div></div>
+        <div class="card-top"><span class="card-h" data-i18n="graph.h">Flugbahn zur Visierlinie</span><div class="card-tools"><div class="legend" id="legendG"></div><button type="button" class="btn icon-btn fs-btn" data-fs aria-pressed="false" aria-label="Vollbild" title="Vollbild" data-i18n-attr="aria-label:fs.open;title:fs.open"><svg class="fs-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><svg class="fs-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg></button></div></div>
         <div class="graph-host" id="graphHost"></div>
         <div class="readout" id="readout" data-i18n="graph.readout">Maus oder Finger über die Grafik führen für Werte.</div>
       </section>
