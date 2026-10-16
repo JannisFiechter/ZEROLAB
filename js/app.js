@@ -666,5 +666,11 @@ full();
 $('#segLang').addEventListener('click',e=>{const v=e.target.dataset.v;if(!v||v===LANG)return;setLang(v);
  if(wipeArm)$('#btnWipe').textContent=tr('wipe.confirm');toggleSet(!$('#setPanel').hidden);renderSetup();renderResults();});
 
+/* ---------- Einstellungen (Zahnrad) ---------- */
+function setMenu(open){$('#setMenu').hidden=!open;$('#btnSet').setAttribute('aria-expanded',String(open));}
+$('#btnSet').addEventListener('click',()=>setMenu($('#setMenu').hidden));
+document.addEventListener('click',e=>{if(!$('#setMenu').hidden&&!e.target.closest('.set-wrap'))setMenu(false);});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#setMenu').hidden){setMenu(false);$('#btnSet').focus();}});
+
 /* ---------- Offline: Service Worker ---------- */
 if('serviceWorker' in navigator&&location.protocol!=='file:')window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});

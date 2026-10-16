@@ -205,3 +205,24 @@ details.blk[open]>summary::after{content:"−"}
 .site-foot span{font-family:var(--f-display);font-weight:600;letter-spacing:.12em;text-transform:uppercase}
 .site-foot a{color:var(--muted);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px;padding:6px 0}
 .site-foot a:hover{color:var(--ink);text-decoration-color:currentColor}
+
+/* Kopf: nur Einheiten und Einstellungen */
+.top-actions{margin-left:auto}
+.set-wrap{position:relative}
+.icon-btn{width:36px;height:34px;padding:0;display:inline-flex;align-items:center;justify-content:center;color:var(--muted)}
+.icon-btn svg{width:19px;height:19px;display:block}
+.icon-btn:hover{color:var(--ink)}
+.icon-btn[aria-expanded="true"]{background:var(--ink);border-color:var(--ink);color:var(--panel)}
+.set-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:30;width:min(290px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 28px -12px rgba(0,0,0,.45);padding:12px;display:flex;flex-direction:column;gap:10px}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.set-sep{border-top:1px solid var(--line)}
+.set-menu .btn.danger{width:100%;padding:8px 12px}
+.set-menu .hint{font-size:12px}
+@media (max-width:760px){
+  .top{gap:10px 12px}
+  .brand{flex:1 1 auto;min-width:0}
+  .set-wrap{order:2}
+  .top-actions{order:3;flex:1 1 100%;margin-left:0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .top-actions .seg{display:flex}
+  .top-actions .seg button{flex:1;padding-block:8px}
+}
