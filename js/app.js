@@ -105,31 +105,37 @@ function loadName(cal,id,name){return cal==='custom'?name:trx('lib.name.'+id,nam
 function kFor(cal,loadId){if(cal==='custom'){const l=findLoad('custom',loadId);return l&&l.k||8;}const c=LIB.find(c=>c.id===cal);return c?c.k:8;}
 function calK(cal){return kFor(cal,S.loadId);}
 
-/* ---------- Speicher: Cookies (1 Jahr), Fallback Browser-Speicher ---------- */
-const Store={mode:'mem',TTL:31536000,
+/* ---------- Speicher: localStorage ohne Ablaufdatum, sonst nur im Arbeitsspeicher ---------- */
+const Store={mode:'mem',
  init(){
-  const sec=location.protocol==='https:';
-  const attr=sec?';SameSite=None;Secure':';SameSite=Lax';
-  try{document.cookie='zl_t=1;max-age=60;path=/'+attr;if(document.cookie.indexOf('zl_t=1')>-1){this.mode='cookie';this.attr=attr;document.cookie='zl_t=;max-age=0;path=/'+attr;return;}}catch(e){}
-  try{localStorage.setItem('zl_t','1');localStorage.removeItem('zl_t');this.mode='local';}catch(e){this.mode='mem';}
+  try{localStorage.setItem('zl_t','1');const ok=localStorage.getItem('zl_t')==='1';localStorage.removeItem('zl_t');this.mode=ok?'local':'mem';}catch(e){this.mode='mem';}
+  if(this.mode==='local'){this.migrate();try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});}catch(e){}}
  },
- cookies(){const o={};try{document.cookie.split(';').forEach(p=>{const i=p.indexOf('=');if(i<0)return;o[p.slice(0,i).trim()]=p.slice(i+1);});}catch(e){}return o;},
  set(key,val){
-  const s=JSON.stringify(val);
-  if(this.mode==='cookie'){
-   try{const enc=encodeURIComponent(s);const parts=[];for(let i=0;i<enc.length;i+=3000)parts.push(enc.slice(i,i+3000));
-    const c=this.cookies();Object.keys(c).forEach(k=>{if(k.indexOf('zl_'+key+'_')===0&&+k.split('_').pop()>=parts.length)document.cookie=k+'=;max-age=0;path=/'+this.attr;});
-    parts.forEach((p,i)=>{document.cookie='zl_'+key+'_'+i+'='+p+';max-age='+this.TTL+';path=/'+this.attr;});}catch(e){}
-  }else if(this.mode==='local'){try{localStorage.setItem('zl_'+key,JSON.stringify({exp:Date.now()+this.TTL*1000,v:val}));}catch(e){}}
+  if(this.mode!=='local')return;
+  try{localStorage.setItem('zl_'+key,JSON.stringify(val));}catch(e){console.warn('ZeroLab: Speichern nicht möglich ('+((e&&e.name)||e)+').');}
  },
  get(key){
-  if(this.mode==='cookie'){const c=this.cookies();let s='',i=0;while(c['zl_'+key+'_'+i]!==undefined){s+=c['zl_'+key+'_'+i];i++;}if(!s)return null;try{return JSON.parse(decodeURIComponent(s));}catch(e){return null;}}
-  if(this.mode==='local'){try{const o=JSON.parse(localStorage.getItem('zl_'+key));if(!o||o.exp<Date.now()){localStorage.removeItem('zl_'+key);return null;}return o.v;}catch(e){return null;}}
-  return null;
+  if(this.mode!=='local')return null;
+  let o;try{const raw=localStorage.getItem('zl_'+key);if(raw===null)return null;o=JSON.parse(raw);}catch(e){return null;}
+  /* altes Format {exp,v}: Ablauf ignorieren, im neuen Format neu speichern */
+  if(o&&typeof o==='object'&&!Array.isArray(o)&&Object.keys(o).length===2&&'exp' in o&&'v' in o){o=o.v;this.set(key,o);}
+  return o;
  },
  wipe(){
-  try{const c=this.cookies();Object.keys(c).forEach(k=>{if(k.indexOf('zl_')===0)document.cookie=k+'=;max-age=0;path=/'+(this.attr||'');});}catch(e){}
+  this.oldCookies().forEach(k=>this.dropCookie(k));
   try{Object.keys(localStorage).forEach(k=>{if(k.indexOf('zl_')===0)localStorage.removeItem(k);});}catch(e){}
+ },
+ /* Altlasten aus früheren Versionen: Cookies zl_<key>_<n>. Nur Migration und Aufräumen greifen auf document.cookie zu. */
+ cookieMap(){const o={};try{document.cookie.split(';').forEach(p=>{const i=p.indexOf('=');if(i<0)return;o[p.slice(0,i).trim()]=p.slice(i+1);});}catch(e){}return o;},
+ oldCookies(){return Object.keys(this.cookieMap()).filter(k=>k.indexOf('zl_')===0);},
+ dropCookie(k){try{document.cookie=k+'=;max-age=0;path=/';document.cookie=k+'=;max-age=0;path=/;SameSite=None;Secure';}catch(e){}},
+ migrate(){
+  const c=this.cookieMap(),keys=new Set();
+  Object.keys(c).forEach(k=>{const m=/^zl_(.+)_(\d+)$/.exec(k);if(m)keys.add(m[1]);});
+  keys.forEach(key=>{let s='',i=0;while(c['zl_'+key+'_'+i]!==undefined){s+=c['zl_'+key+'_'+i];i++;}
+   try{if(s&&localStorage.getItem('zl_'+key)===null)this.set(key,JSON.parse(decodeURIComponent(s)));}catch(e){}});
+  this.oldCookies().forEach(k=>this.dropCookie(k));
  }};
 let saveT=null;
 function persist(){clearTimeout(saveT);saveT=setTimeout(()=>{Store.set('s',S);syncActive();Store.set('v',VARS);Store.set('c',CUSTOM);},250);}
@@ -392,6 +398,7 @@ function renderSetup(){
  // Zero
  const zr=$('#zRange');zr.min=5;zr.max=U.m?600:650;zr.step=1;
  $('#zUnit').textContent=U.dU();
+ $('#storeNote').textContent=Store.mode==='local'?tr('store.local'):tr('store.mem');
  renderVCalc();
 }
 function renderVCalc(){
@@ -543,7 +550,7 @@ document.querySelectorAll('.help').forEach(b=>b.addEventListener('click',e=>{e.p
 let wipeArm=false;
 $('#btnWipe').addEventListener('click',()=>{const b=$('#btnWipe');
  if(!wipeArm){wipeArm=true;b.textContent=tr('wipe.confirm');b.classList.add('armed');setTimeout(()=>{wipeArm=false;b.textContent=tr('wipe.btn');b.classList.remove('armed');},4000);return;}
- Store.wipe();S=defaults();selectLoad('556','sp-ds1-41');VARS=[];CUSTOM=[];ensureVars();wipeArm=false;b.textContent=tr('wipe.btn');b.classList.remove('armed');full();Store.wipe();toast(tr('wipe.done'));});
+ Store.wipe();S=defaults();selectLoad('556','sp-ds1-41');VARS=[];CUSTOM=[];ensureVars();wipeArm=false;b.textContent=tr('wipe.btn');b.classList.remove('armed');full();clearTimeout(saveT);Store.wipe();toast(tr('wipe.done'));});
 $('#btnPdf').addEventListener('click',()=>exportPDF(VARS.some(v=>v.id!==S.av&&v.vis)?'compare':'single'));
 
 /* ---------- PDF ---------- */
@@ -670,6 +677,34 @@ function setMenu(open){$('#setMenu').hidden=!open;$('#btnSet').setAttribute('ari
 $('#btnSet').addEventListener('click',()=>setMenu($('#setMenu').hidden));
 document.addEventListener('click',e=>{if(!$('#setMenu').hidden&&!e.target.closest('.set-wrap'))setMenu(false);});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#setMenu').hidden){setMenu(false);$('#btnSet').focus();}});
+
+/* ---------- Datenschutz (Fusszeile) ---------- */
+function privMenu(open){$('#privMenu').hidden=!open;$('#btnPriv').setAttribute('aria-expanded',String(open));}
+$('#btnPriv').addEventListener('click',()=>privMenu($('#privMenu').hidden));
+document.addEventListener('click',e=>{if(!$('#privMenu').hidden&&!e.target.closest('.priv-wrap'))privMenu(false);});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#privMenu').hidden){privMenu(false);$('#btnPriv').focus();}});
+
+/* ---------- Eigene Laborierungen: Export / Import (JSON) ---------- */
+const validLoad=l=>!!l&&typeof l==='object'&&typeof l.id==='string'&&l.id.length>0&&l.id.length<=64&&typeof l.name==='string'&&l.name.trim().length>0
+ &&['w','mv','bl','bc'].every(k=>typeof l[k]==='number'&&isFinite(l[k])&&l[k]>0)&&(l.model==='G1'||l.model==='G7')&&(l.k===undefined||(typeof l.k==='number'&&isFinite(l.k)&&l.k>0));
+$('#btnExport').addEventListener('click',()=>{
+ if(!CUSTOM.length){toast(tr('io.none'));return;}
+ const d=new Date(),p2=n=>String(n).padStart(2,'0');
+ const blob=new Blob([JSON.stringify({app:'zerolab',type:'loads',version:1,loads:CUSTOM},null,2)],{type:'application/json'});
+ try{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`zerolab-laborierungen-${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}.json`;
+  document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2000);toast(tr('io.exported'));}catch(e){toast(tr('pdf.dlFail'));}});
+$('#btnImport').addEventListener('click',()=>$('#inImport').click());
+$('#inImport').addEventListener('change',async e=>{
+ const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;
+ let list=null;
+ try{if(f.size<=1e6){const o=JSON.parse(await f.text());list=Array.isArray(o)?o:(o&&o.app==='zerolab'&&Array.isArray(o.loads)?o.loads:null);}}catch(err){list=null;}
+ if(!list||!list.length||!list.every(validLoad)){toast(tr('io.bad'));return;}
+ const loads=list.map(l=>({id:l.id,name:l.name.trim().slice(0,80),w:l.w,mv:l.mv,bl:l.bl,bc:l.bc,model:l.model,k:l.k||8,note:'Eigene Laborierung.'}));
+ const dup=loads.filter(l=>CUSTOM.some(c=>c.id===l.id));
+ const over=dup.length?confirm(tr('io.dup',{n:dup.length})):false;
+ let n=0;loads.forEach(l=>{const i=CUSTOM.findIndex(c=>c.id===l.id);if(i<0){CUSTOM.push(l);n++;}else if(over){CUSTOM[i]=l;n++;}});
+ if(!n){toast(tr('io.nothing'));return;}
+ full();toast(tr('io.done',{n}));});
 
 /* ---------- Zero-Leiste kompakt, sobald sie beim Scrollen klebt (nur installierte App) ---------- */
 const ZB=document.querySelector('.zerobar');
