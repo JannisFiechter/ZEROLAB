@@ -305,3 +305,6 @@ details.blk.fold:not([open])>summary .help{display:none}
 /* App: in der vollen Zero-Leiste Varianten auf eigener Zeile unter dem Label */
 html.is-app .zerobar:not(.compact) .cmpbar{gap:8px 6px;padding-top:10px;border-top:1px solid var(--line)}
 html.is-app .zerobar:not(.compact) .cmpbar>.lbl{flex:1 0 100%}
+
+/* App: keine automatische Scroll-Verankerung (die Zero-Leiste ändert beim Andocken ihre Höhe) */
+html.is-app{overflow-anchor:none}

@@ -711,28 +711,20 @@ $('#inImport').addEventListener('change',async e=>{
 /* ---------- Zero-Leiste kompakt, sobald sie beim Scrollen klebt (nur installierte App) ---------- */
 const ZB=document.querySelector('.zerobar');
 const isApp=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
-/* Höhe und margin-bottom laufen gegengleich animiert: die Summe bleibt konstant, der Inhalt darunter springt nicht */
-let zbT=0;
-function zbCompact(on,instant){if(on===ZB.classList.contains('compact')&&!instant)return;
- const cur=ZB.offsetHeight,curM=parseFloat(ZB.style.marginBottom)||0;
- clearTimeout(zbT);ZB.classList.remove('zb-anim');ZB.style.height='';ZB.style.marginBottom='';
- ZB.classList.remove('compact');const hFull=ZB.offsetHeight;ZB.classList.add('compact');const hMin=ZB.offsetHeight;
- zbMin=hMin;ZB.classList.toggle('compact',on);const m=on?hFull-hMin:0;
- if(instant){ZB.style.marginBottom=m?m+'px':'';return;}
- ZB.style.height=cur+'px';ZB.style.marginBottom=curM+'px';void ZB.offsetHeight;
- ZB.classList.toggle('zb-grow',!on);ZB.classList.add('zb-anim');ZB.style.height=(on?hMin:hFull)+'px';ZB.style.marginBottom=m+'px';
- zbT=setTimeout(()=>{ZB.classList.remove('zb-anim');ZB.style.height='';ZB.style.marginBottom=m?m+'px':'';zbCheck();},280);}
-/* Umschaltpunkt = Höhendifferenz (Platzhalter): kompakt erst, wenn der Inhalt unter der vollen Leiste durchgescrollt ist,
- gross genau dann, wenn der Platzhalter beim Hochscrollen ins Bild käme. Kein Leerraum, kein Flackern. */
-let zbMin=0,zbRaf=0;const ZB_PAD=120;/* Vorlauf: Vergrössern beginnt, bevor der Platzhalter sichtbar wird */
-function zbGap(){
- if(ZB.classList.contains('compact'))return parseFloat(ZB.style.marginBottom)||0;
- if(!zbMin){ZB.classList.add('compact');zbMin=ZB.offsetHeight;ZB.classList.remove('compact');}
- return Math.max(0,ZB.offsetHeight-zbMin);}
+/* Klappt zu, sobald die Leiste oben andockt, und wieder auf, sobald sie ihre Ausgangsposition erreicht.
+ Die Höhe wird animiert, der Inhalt darunter rückt weich mit (Scroll-Verankerung ist im App-Modus aus). */
+let zbT=0,zbRaf=0;
+function zbCompact(on){if(on===ZB.classList.contains('compact'))return;
+ const cur=ZB.offsetHeight;clearTimeout(zbT);ZB.classList.remove('zb-anim');ZB.style.height='';
+ ZB.classList.toggle('compact',on);const tgt=ZB.offsetHeight;
+ ZB.style.height=cur+'px';void ZB.offsetHeight;
+ ZB.classList.toggle('zb-grow',!on);ZB.classList.add('zb-anim');ZB.style.height=tgt+'px';
+ zbT=setTimeout(()=>{ZB.classList.remove('zb-anim');ZB.style.height='';zbCheck();},280);}
 function zbCheck(){zbRaf=0;if(!isApp()||ZB.classList.contains('zb-anim'))return;
- zbCompact($('#zbSentinel').getBoundingClientRect().top<-(zbGap()+ZB_PAD));}
+ const t=$('#zbSentinel').getBoundingClientRect().top,c=ZB.classList.contains('compact');
+ if(!c&&t<0)zbCompact(true);else if(c&&t>=0)zbCompact(false);}
 window.addEventListener('scroll',()=>{if(!zbRaf)zbRaf=requestAnimationFrame(zbCheck);},{passive:true});
-window.addEventListener('resize',()=>{zbMin=0;if(ZB.classList.contains('compact'))zbCompact(true,true);zbCheck();});
+window.addEventListener('resize',()=>zbCheck());
 
 /* ---------- App-Modus (installierte PWA): kein Zoom, keine Browser-Gesten ---------- */
 if(isApp()){
