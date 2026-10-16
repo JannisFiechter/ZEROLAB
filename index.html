@@ -20,9 +20,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<link rel="stylesheet" href="css/style.css?v=9">
-<script src="js/i18n.js?v=9" defer></script>
-<script src="js/app.js?v=9" defer></script>
+<link rel="stylesheet" href="css/style.css?v=10">
+<script src="js/i18n.js?v=10" defer></script>
+<script src="js/app.js?v=10" defer></script>
 </head>
 <body>
 
@@ -52,8 +52,9 @@
 
 <div class="app gut">
   <aside class="setup">
-    <section class="blk">
-      <div class="blk-head"><h2 data-i18n="ammo.h">Munition</h2><button type="button" class="help" data-help="ammo" aria-expanded="false" aria-label="Hilfe Munition" data-i18n-attr="aria-label:ammo.help.aria">?</button></div>
+    <details class="blk fold" open>
+      <summary class="blk-head"><h2 data-i18n="ammo.h">Munition</h2><button type="button" class="help" data-help="ammo" aria-expanded="false" aria-label="Hilfe Munition" data-i18n-attr="aria-label:ammo.help.aria">?</button></summary>
+      <div class="blk-body">
       <p class="helptext" id="help-ammo" hidden data-i18n="ammo.help">Kaliber und Laborierung stehen auf der Schachtel. Unsicher? Für Stgw 90 «GP 90» nehmen, für ein AR-15 mit Schweizer Sportmunition «SwissP DS-1 4.1 g». Alle Werte bleiben editierbar.</p>
       <label class="fld"><span data-i18n="ammo.cal">Kaliber</span><select id="selCal"></select></label>
       <label class="fld"><span data-i18n="ammo.load">Laborierung</span><select id="selLoad"></select></label>
@@ -70,20 +71,24 @@
       <p class="hint" id="loadNote"></p>
       <div class="inline"><input class="inp" id="inCustName" placeholder="Name, z. B. Eigene 63 gr" data-i18n-attr="placeholder:ammo.custName" autocomplete="off"><button type="button" class="btn" id="btnSaveLoad" data-i18n="ammo.save">Als eigene speichern</button></div>
       <button type="button" class="btn" id="btnDelLoad" hidden data-i18n="ammo.del">Diese eigene Laborierung löschen</button>
-    </section>
+    </div>
+    </details>
 
-    <section class="blk">
-      <div class="blk-head"><h2 data-i18n="barrel.h">Lauf und v0</h2><button type="button" class="help" data-help="barrel" aria-expanded="false" aria-label="Hilfe Lauf" data-i18n-attr="aria-label:barrel.help.aria">?</button></div>
+    <details class="blk fold" open>
+      <summary class="blk-head"><h2 data-i18n="barrel.h">Lauf und v0</h2><button type="button" class="help" data-help="barrel" aria-expanded="false" aria-label="Hilfe Lauf" data-i18n-attr="aria-label:barrel.help.aria">?</button></summary>
+      <div class="blk-body">
       <p class="helptext" id="help-barrel" hidden data-i18n="barrel.help">Die v0 auf der Schachtel gilt nur für den Testlauf des Herstellers (oft 508 bis 610 mm). Ein kürzerer Lauf verliert Geschwindigkeit. Gemessen wird ab Stossboden bis Mündung, ohne Mündungsaufsatz. Stgw 90: 528 mm. Unbekannt: 14.5″ für ein Kurz-AR, 16″ für ein Standard-AR. Hast du einen Chronographen, trag die gemessene v0 ein, die schlägt jede Schätzung.</p>
       <label class="fld"><span><span data-i18n="barrel.yours">Dein Lauf</span> <em id="uBL">mm</em></span><input id="inBL" inputmode="decimal" autocomplete="off"></label>
       <div class="chips" id="blChips"></div>
       <label class="check"><input type="checkbox" id="chkMeas"> <span data-i18n="barrel.meas">v0 selbst gemessen (Chronograph)</span></label>
       <label class="fld" id="measWrap" hidden><span><span data-i18n="barrel.measV">Gemessene v0</span> <em id="uVm">m/s</em></span><input id="inVm" inputmode="decimal" autocomplete="off"></label>
       <div class="calc" id="vCalc"></div>
-    </section>
+    </div>
+    </details>
 
-    <section class="blk">
-      <div class="blk-head"><h2 data-i18n="sight.h">Visierung</h2><button type="button" class="help" data-help="sight" aria-expanded="false" aria-label="Hilfe Visierung" data-i18n-attr="aria-label:sight.help.aria">?</button></div>
+    <details class="blk fold" open>
+      <summary class="blk-head"><h2 data-i18n="sight.h">Visierung</h2><button type="button" class="help" data-help="sight" aria-expanded="false" aria-label="Hilfe Visierung" data-i18n-attr="aria-label:sight.help.aria">?</button></summary>
+      <div class="blk-body">
       <p class="helptext" id="help-sight" hidden data-i18n="sight.help">Visierhöhe = Abstand Laufachse bis Mitte Optik. Sie setzt sich zusammen aus Rail über Laufachse (Waffe) und Montagehöhe (Rail bis Optikmitte, steht beim Montagehersteller). Unsicher? AR-15 und «Lower 1/3». Absolute Co-Witness bedeutet: Leuchtpunkt auf Höhe Kimme und Korn. Für exakte Werte selbst messen: Mitte Okular über Rail plus halber Laufdurchmesser abziehen.</p>
       <label class="fld"><span data-i18n="sight.rtb">Waffe: Rail über Laufachse</span><select id="selRtb"></select></label>
       <label class="fld"><span><span data-i18n="sight.val">Wert</span> <em id="uRtb">mm</em></span><input id="inRtb" inputmode="decimal" autocomplete="off"></label>
@@ -91,7 +96,8 @@
       <label class="fld"><span><span data-i18n="sight.val">Wert</span> <em id="uMount">mm</em></span><input id="inMount" inputmode="decimal" autocomplete="off"></label>
       <p class="hint" id="rtbNote"></p>
       <div class="total"><span data-i18n="sight.total">Visierhöhe</span><div><strong id="outSH"></strong> <em id="outSH2"></em></div></div>
-    </section>
+    </div>
+    </details>
 
     <details class="blk" id="detEnv">
       <summary data-i18n="env.h">Umgebung und Feinheiten</summary>

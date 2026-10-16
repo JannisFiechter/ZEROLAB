@@ -678,6 +678,9 @@ $('#btnSet').addEventListener('click',()=>setMenu($('#setMenu').hidden));
 document.addEventListener('click',e=>{if(!$('#setMenu').hidden&&!e.target.closest('.set-wrap'))setMenu(false);});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#setMenu').hidden){setMenu(false);$('#btnSet').focus();}});
 
+/* ---------- Aufklappbare Boxen: Doppelklick auf den Titel markiert keinen Text ---------- */
+document.querySelectorAll('details.blk>summary').forEach(su=>su.addEventListener('mousedown',e=>{if(e.detail>1)e.preventDefault();}));
+
 /* ---------- Datenschutz (Fusszeile) ---------- */
 function privMenu(open){$('#privMenu').hidden=!open;$('#btnPriv').setAttribute('aria-expanded',String(open));}
 $('#btnPriv').addEventListener('click',()=>privMenu($('#privMenu').hidden));

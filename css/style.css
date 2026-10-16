@@ -286,3 +286,12 @@ html.app{touch-action:pan-x pan-y;overscroll-behavior:none;-webkit-text-size-adj
 html.app body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 html.app button,html.app summary,html.app label,html.app .seg,html.app .chip,html.app .vchip,html.app .lbl,html.app h2,html.app .card-h,html.app .zb-tag,html.app .brand,html.app .tgt-host,html.app .graph-host,html.app .legend,html.app .stat{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 html.app input,html.app select,html.app textarea{-webkit-user-select:text;user-select:text}
+
+/* Aufklappbare Setup-Boxen (Munition, Lauf, Visierung) */
+details.blk.fold{display:block}
+details.blk.fold>summary.blk-head{display:flex}
+details.blk.fold>summary.blk-head::after{float:none;order:3;margin-left:10px;min-width:10px;text-align:center}
+details.blk.fold>summary .help{margin-left:auto}
+.fold>.blk-body{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+/* Kein Markieren beim schnellen Auf- und Zuklappen (Inhalt bleibt kopierbar) */
+details.blk>summary{-webkit-user-select:none;user-select:none}
