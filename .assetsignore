@@ -1,0 +1,13 @@
+# Dateien im Repo, die nicht zur Website gehören (werden von Cloudflare nicht ausgeliefert)
+.git
+.github
+.gitignore
+.assetsignore
+wrangler.jsonc
+wrangler.json
+wrangler.toml
+README.md
+.nojekyll
+.wrangler
+.dev.vars
+node_modules

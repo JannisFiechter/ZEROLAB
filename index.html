@@ -3,212 +3,26 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ZeroLab</title>
+<title>Schussendlich: ZeroLab</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#FAFBFC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#161B20" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ZeroLab">
+<meta name="application-name" content="Schussendlich: ZeroLab">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>
-[hidden]{display:none!important}
-body{margin:0}
-img{max-width:100%}
-:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-/* Layout: Kopfzeile, links Setup-Spalte, rechts Arbeitsfläche mit klebender Zero-Leiste, Scheibe neben Flugbahn, darunter Tabellen. */
-:root{
-  --bg:#ECEEF0; --panel:#FAFBFC; --panel-2:#F1F3F5; --ink:#161B21; --muted:#5A646F; --line:#D2D8DE;
-  --accent:#D4511C; --accent-ink:#FFFFFF; --accent-soft:#F7E2D6;
-  --good:#2C7A4C; --good-soft:#DAEEE1; --bad:#B23528; --bad-soft:#F5DCD8;
-  --card:#D6C4A0; --card-line:#5A4527; --card-ink:#4A3B24; --ring-black:#1B1B1B; --ring-white:#F7F5EF;
-  --wall:#E3E6E9; --sil:#2B3036; --grid:#E0E4E8;
-  --s1:#D4511C; --s2:#2D64A8; --s3:#2E8757; --s4:#8B4BB0; --s5:#A87C0E; --s6:#13868A; --s7:#C2416B;
-  --f-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
-  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0F1317; --panel:#161B20; --panel-2:#1C2228; --ink:#E3E7EB; --muted:#8C97A2; --line:#29313A;
-  --accent:#F0743B; --accent-ink:#160A03; --accent-soft:#3A2317;
-  --good:#5CC08A; --good-soft:#16302A; --bad:#F07868; --bad-soft:#3A1E1B;
-  --card:#B9A684; --card-line:#3E301C; --card-ink:#33281A; --ring-black:#151515; --ring-white:#E7E4DC;
-  --wall:#11161A; --sil:#4A535D; --grid:#232A31;
-  --s1:#F0743B; --s2:#5B92D9; --s3:#4FB884; --s4:#B07BD6; --s5:#D9AE3A; --s6:#3DB5B7; --s7:#E06690;
-  color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0F1317; --panel:#161B20; --panel-2:#1C2228; --ink:#E3E7EB; --muted:#8C97A2; --line:#29313A;
-  --accent:#F0743B; --accent-ink:#160A03; --accent-soft:#3A2317;
-  --good:#5CC08A; --good-soft:#16302A; --bad:#F07868; --bad-soft:#3A1E1B;
-  --card:#B9A684; --card-line:#3E301C; --card-ink:#33281A; --ring-black:#151515; --ring-white:#E7E4DC;
-  --wall:#11161A; --sil:#4A535D; --grid:#232A31;
-  --s1:#F0743B; --s2:#5B92D9; --s3:#4FB884; --s4:#B07BD6; --s5:#D9AE3A; --s6:#3DB5B7; --s7:#E06690;
-  color-scheme:dark}
-*{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.45}
-button,input,select{font:inherit;color:inherit}
-button{cursor:pointer}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-
-/* Kopf */
-.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding-block:12px;background:var(--panel);border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:center;gap:12px}
-.brand svg{width:34px;height:34px;flex:none}
-.brand-name{font-family:var(--f-display);font-weight:700;font-size:26px;letter-spacing:.04em;line-height:1;text-transform:uppercase}
-.brand-sub{color:var(--muted);font-size:12.5px}
-.top-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-
-.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:var(--panel-2)}
-.seg button{border:0;background:transparent;padding:6px 11px;font-size:13px;font-weight:500;color:var(--muted)}
-.seg button+button{border-left:1px solid var(--line)}
-.seg button[aria-pressed="true"]{background:var(--ink);color:var(--panel)}
-.btn{border:1px solid var(--line);background:var(--panel-2);border-radius:7px;padding:6px 12px;font-weight:500;font-size:13px}
-.btn:hover{border-color:var(--muted)}
-.btn.accent{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
-.btn.danger{background:var(--bad);color:var(--panel);border-color:var(--bad);font-weight:600}
-.btn.danger.armed{outline:2px solid var(--bad);outline-offset:2px}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.pdf-wrap{position:relative}
-.menu{position:absolute;right:0;top:calc(100% + 6px);z-index:30;background:var(--panel);border:1px solid var(--line);border-radius:9px;box-shadow:0 12px 28px -12px rgba(0,0,0,.45);padding:6px;display:flex;flex-direction:column;min-width:230px}
-.menu button{border:0;background:transparent;text-align:left;padding:8px 10px;border-radius:6px}
-.menu button:hover{background:var(--panel-2)}
-.menu small{display:block;color:var(--muted);font-size:11.5px}
-
-/* Grundgerüst */
-.app{display:grid;grid-template-columns:330px minmax(0,1fr);gap:16px;padding-block:16px;max-width:1640px;margin:0 auto}
-@media (max-width:1020px){.app{grid-template-columns:minmax(0,1fr)}}
-.setup{display:flex;flex-direction:column;gap:12px;min-width:0}
-.work{display:flex;flex-direction:column;gap:14px;min-width:0}
-.blk,.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
-.blk{display:flex;flex-direction:column;gap:10px}
-h2,.card-h{font-family:var(--f-display);font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;margin:0;line-height:1.2}
-.blk-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.fld{display:flex;flex-direction:column;gap:4px;min-width:0}
-.fld>span,.lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;display:flex;align-items:center;gap:6px}
-.fld em,.lbl em{font-style:normal;text-transform:none;letter-spacing:0;color:var(--muted);opacity:.85}
-.fld input,.fld select,.inp{width:100%;height:36px;border:1px solid var(--line);border-radius:7px;background:var(--panel-2);padding:0 10px;min-width:0}
-.fld input,.inp{font-family:var(--f-mono);font-size:13.5px}
-.fld input:disabled{opacity:.5}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.help{width:18px;height:18px;border-radius:50%;border:1px solid var(--line);background:var(--panel);font-size:11px;line-height:1;padding:0;color:var(--muted);font-weight:600;flex:none}
-.help[aria-expanded="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
-.helptext{font-size:12.5px;color:var(--ink);background:var(--panel-2);border-left:3px solid var(--accent);padding:8px 10px;border-radius:0 6px 6px 0;margin:0}
-.hint{font-size:12.5px;color:var(--muted);margin:0}
-.calc{font-size:12.5px;background:var(--panel-2);border:1px dashed var(--line);border-radius:7px;padding:8px 10px;display:flex;flex-direction:column;gap:3px}
-.calc b{font-family:var(--f-mono);font-weight:600}
-.calc .est{color:var(--accent);font-weight:600}
-.check{display:flex;gap:8px;align-items:center;font-size:13px}
-.check input{width:16px;height:16px;accent-color:var(--accent)}
-.inline{display:flex;gap:8px;align-items:center}
-.inline .inp{flex:1}
-.total{display:flex;align-items:baseline;justify-content:space-between;gap:8px;background:var(--ink);color:var(--panel);border-radius:8px;padding:10px 12px}
-.total span{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;opacity:.75}
-.total strong{font-family:var(--f-mono);font-size:18px}
-.total em{font-style:normal;font-family:var(--f-mono);opacity:.7;font-size:12px}
-details.blk>summary{cursor:pointer;font-family:var(--f-display);font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;list-style:none}
-details.blk>summary::-webkit-details-marker{display:none}
-details.blk>summary::after{content:"+";float:right;color:var(--muted)}
-details.blk[open]>summary::after{content:"−"}
-.store{font-size:12px;color:var(--muted);padding:0 4px}
-
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{border:1px solid var(--line);background:var(--panel-2);border-radius:999px;padding:4px 10px;font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
-.chip:hover{border-color:var(--muted);color:var(--ink)}
-.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--ink);font-weight:600}
-.chip.small{padding:2px 8px;font-size:12px}
-
-/* Zero-Leiste */
-.zerobar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px;box-shadow:0 10px 22px -18px rgba(0,0,0,.55);display:flex;flex-direction:column;gap:10px}
-.zb-main{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
-.zb-num{display:flex;align-items:center;gap:6px}
-.zb-tag{font-family:var(--f-display);font-weight:700;font-size:15px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;writing-mode:vertical-rl;transform:rotate(180deg)}
-.zb-num button{width:36px;height:36px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);font-size:20px;line-height:1;font-weight:600}
-.zb-num input{width:92px;height:46px;border:2px solid var(--ink);border-radius:8px;background:var(--panel);text-align:center;font-family:var(--f-display);font-size:34px;font-weight:700;padding:0 4px}
-.zb-unit{font-family:var(--f-display);font-weight:600;font-size:20px;color:var(--muted);min-width:22px}
-.zb-slide{flex:1 1 220px;min-width:180px;display:flex;flex-direction:column;gap:4px}
-.zb-slide input{width:100%;accent-color:var(--accent)}
-.stats{display:flex;flex-wrap:wrap;gap:6px}
-.stat{display:inline-flex;gap:6px;align-items:baseline;border-radius:6px;background:var(--panel-2);border:1px solid var(--line);padding:4px 9px;font-size:12.5px}
-.stat span{color:var(--muted)}
-.stat b{font-family:var(--f-mono);font-weight:600}
-.stat.good{background:var(--good-soft);border-color:transparent}
-.stat.good b{color:var(--good)}
-.stat.bad{background:var(--bad-soft);border-color:transparent}
-.stat.bad b{color:var(--bad)}
-.stat button{border:0;background:none;color:var(--accent);font-size:12px;padding:0;text-decoration:underline;font-weight:500}
-.err{color:var(--bad);font-weight:600;font-size:13px}
-
-.distbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
-.dist-add{display:flex;gap:6px;align-items:center}
-.dist-add input{width:80px;height:30px}
-.presets{display:flex;gap:6px;flex-wrap:wrap}
-.presets button{border:0;background:none;color:var(--muted);font-size:12px;text-decoration:underline;padding:2px}
-
-.dists{border-top:1px solid var(--line);padding-top:8px}
-.dists>summary{cursor:pointer;list-style:none;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-family:var(--f-mono);font-size:12.5px}
-.dists>summary::-webkit-details-marker{display:none}
-.setpanel{display:flex;flex-direction:column;gap:10px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:12px}
-.dists{margin:0;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-family:var(--f-mono);font-size:12.5px}
-.dists .link{border:0;background:none;padding:0;font-family:var(--f-body);color:var(--accent);text-decoration:underline;font-size:12px}
-.dists[open] .link{display:none}
-.dists .distbar{margin-top:10px}
-.cmpbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.cmpbar:empty{display:none}
-.vchip{display:inline-flex;align-items:stretch;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--panel-2);font-size:12.5px}
-.vchip button{border:0;background:transparent;padding:4px 10px;display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
-.vchip .vx{padding:4px 9px;border-left:1px solid var(--line);font-size:14px;line-height:1}
-.vchip .vx:hover{color:var(--bad)}
-.vchip i{width:10px;height:10px;border-radius:50%;flex:none;opacity:.35}
-.vchip.on{border-color:var(--ink)}
-.vchip.on button{color:var(--ink);font-weight:600}
-.vchip.on i{opacity:1}
-.vchip.act{background:var(--ink);border-color:var(--ink)}
-.vchip.act button{color:var(--panel)}
-.vchip .vx svg{width:14px;height:14px;display:block}
-.grid2{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.35fr);gap:14px}
-@media (max-width:1280px){.grid2{grid-template-columns:minmax(0,1fr)}}
-.card{display:flex;flex-direction:column;gap:10px;min-width:0}
-.card-top{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between}
-.card-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.card-tools select,.card-tools input{height:32px;border:1px solid var(--line);border-radius:7px;background:var(--panel-2);padding:0 8px;max-width:100%}
-.tgt-host{background:var(--wall);border-radius:8px;display:flex;justify-content:center;padding:8px;min-height:240px}
-.tgt-host svg{width:100%;max-height:640px;height:auto;display:block}
-.graph-host{position:relative;overflow-x:auto}
-.graph-host svg{width:100%;min-width:520px;height:auto;display:block}
-.readout{font-family:var(--f-mono);font-size:12.5px;min-height:20px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 14px}
-.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px}
-.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
-.foot{font-size:12px;color:var(--muted);margin:0}
-
-.tbl-wrap{overflow-x:auto}
-.tbl{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:13px}
-.tbl th{font-family:var(--f-body);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;text-align:right;padding:6px 10px;white-space:nowrap}
-.tbl th:first-child,.tbl td:first-child{text-align:left}
-.tbl td{padding:6px 10px;border-top:1px solid var(--line);text-align:right;white-space:nowrap}
-.tbl tr.z td{background:var(--accent-soft)}
-.tbl .out{color:var(--bad)}
-.tbl .in{color:var(--good)}
-.tbl .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
-
-.snaps{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
-.snap{border:1px solid var(--line);border-radius:9px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;background:var(--panel-2)}
-.snap.off{opacity:.55}
-.snap-h{display:flex;align-items:center;gap:8px}
-.snap-h i{width:12px;height:12px;border-radius:50%;flex:none}
-.snap-h strong{font-family:var(--f-display);font-size:19px;font-weight:600;letter-spacing:.03em}
-.snap p{margin:0;font-size:12px;color:var(--muted)}
-.snap-a{display:flex;gap:6px;flex-wrap:wrap}
-.snap-a button{font-size:12px;padding:3px 9px}
-.empty{border:1px dashed var(--line);border-radius:9px;padding:14px;color:var(--muted);font-size:13px}
-
-.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--panel);padding:9px 16px;border-radius:8px;font-size:13px;z-index:50;max-width:calc(100% - 32px)}
-@media (max-width:560px){
-  .row3{grid-template-columns:1fr 1fr}
-  .zb-num input{width:78px;font-size:30px}
-  .brand-sub{display:none}
-}
-@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
-</style>
+<link rel="stylesheet" href="css/style.css?v=12">
+<script src="js/i18n.js?v=12" defer></script>
+<script src="js/app.js?v=12" defer></script>
 </head>
 <body>
 
@@ -216,92 +30,111 @@ details.blk[open]>summary::after{content:"−"}
 <header class="top gut">
   <div class="brand">
     <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="15" fill="none" stroke="var(--ink)" stroke-width="2.2"/><circle cx="20" cy="20" r="2.6" fill="var(--accent)"/><path d="M20 1v10M20 29v10M1 20h10M29 20h10" stroke="var(--ink)" stroke-width="2.2"/></svg>
-    <div><div class="brand-name">ZeroLab</div><div class="brand-sub">Zero-Distanz simulieren, Treffpunktlage vergleichen</div></div>
+    <div><div class="brand-kicker">Schussendlich</div><div class="brand-name">ZeroLab</div><div class="brand-sub" data-i18n="brand.sub">Zero-Distanz simulieren, Treffpunktlage vergleichen</div></div>
   </div>
   <div class="top-actions">
-    <div class="seg" id="segUnits" role="group" aria-label="Einheiten"><button type="button" data-v="metric">Metrisch</button><button type="button" data-v="imperial">Imperial</button></div>
-    <div class="seg" id="segAngle" role="group" aria-label="Winkeleinheit"><button type="button" data-v="mrad">MRAD</button><button type="button" data-v="moa">MOA</button></div>
-    <button type="button" class="btn" id="btnPdf" title="Mit Vergleichen wird der Vergleich gedruckt, sonst die aktuelle Einstellung">PDF erstellen</button>
-    <button type="button" class="btn danger" id="btnWipe">Daten löschen</button>
+    <div class="seg" id="segUnits" role="group" aria-label="Einheiten" data-i18n-attr="aria-label:units.aria"><button type="button" data-v="metric" data-i18n="units.metric">Metrisch</button><button type="button" data-v="imperial" data-i18n="units.imperial">Imperial</button></div>
+    <div class="seg" id="segAngle" role="group" aria-label="Winkeleinheit" data-i18n-attr="aria-label:angle.aria"><button type="button" data-v="mrad">MRAD</button><button type="button" data-v="moa">MOA</button></div>
+  </div>
+  <div class="set-wrap">
+    <button type="button" class="btn icon-btn" id="btnSet" aria-haspopup="true" aria-expanded="false" aria-controls="setMenu" aria-label="Einstellungen" title="Einstellungen" data-i18n-attr="aria-label:set.aria;title:set.aria"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+    <div class="set-menu" id="setMenu" role="dialog" aria-label="Einstellungen" data-i18n-attr="aria-label:set.aria" hidden>
+      <div class="set-row"><span class="lbl" data-i18n="set.lang">Sprache</span><div class="seg" id="segLang" role="group" aria-label="Sprache" data-i18n-attr="aria-label:lang.aria"><button type="button" data-v="de" lang="de">DE</button><button type="button" data-v="en" lang="en">EN</button></div></div>
+      <div class="set-sep"></div>
+      <div class="set-row"><span class="lbl" data-i18n="io.h">Eigene Laborierungen</span><div class="io-btns"><button type="button" class="btn" id="btnExport" data-i18n="io.export">Export</button><button type="button" class="btn" id="btnImport" data-i18n="io.import">Import</button></div></div>
+      <input type="file" id="inImport" accept="application/json,.json" hidden>
+      <div class="set-sep"></div>
+      <button type="button" class="btn danger" id="btnWipe" data-i18n="wipe.btn">Daten löschen</button>
+      <p class="hint" data-i18n="set.wipeHint">Löscht alle gespeicherten Einstellungen, Varianten und eigenen Laborierungen in diesem Browser.</p>
+    </div>
   </div>
 </header>
 
 <div class="app gut">
   <aside class="setup">
-    <section class="blk">
-      <div class="blk-head"><h2>Munition</h2><button type="button" class="help" data-help="ammo" aria-expanded="false" aria-label="Hilfe Munition">?</button></div>
-      <p class="helptext" id="help-ammo" hidden>Kaliber und Laborierung stehen auf der Schachtel. Unsicher? Für Stgw 90 «GP 90» nehmen, für ein AR-15 mit Schweizer Sportmunition «SwissP DS-1 4.1 g». Alle Werte bleiben editierbar.</p>
-      <label class="fld"><span>Kaliber</span><select id="selCal"></select></label>
-      <label class="fld"><span>Laborierung</span><select id="selLoad"></select></label>
+    <details class="blk fold" open>
+      <summary class="blk-head"><h2 data-i18n="ammo.h">Munition</h2><button type="button" class="help" data-help="ammo" aria-expanded="false" aria-label="Hilfe Munition" data-i18n-attr="aria-label:ammo.help.aria">?</button></summary>
+      <div class="blk-body">
+      <p class="helptext" id="help-ammo" hidden data-i18n="ammo.help">Kaliber und Laborierung stehen auf der Schachtel. Unsicher? Für Stgw 90 «GP 90» nehmen, für ein AR-15 mit Schweizer Sportmunition «SwissP DS-1 4.1 g». Alle Werte bleiben editierbar.</p>
+      <label class="fld"><span data-i18n="ammo.cal">Kaliber</span><select id="selCal"></select></label>
+      <label class="fld"><span data-i18n="ammo.load">Laborierung</span><select id="selLoad"></select></label>
       <div class="row3">
-        <label class="fld"><span>Geschoss <em id="uW">g</em></span><input id="inW" inputmode="decimal" autocomplete="off"></label>
-        <label class="fld"><span>BC <button type="button" class="help" data-help="bc" aria-expanded="false" aria-label="Hilfe BC">?</button></span><input id="inBC" inputmode="decimal" autocomplete="off"></label>
-        <label class="fld"><span>Modell</span><select id="selModel"><option value="G1">G1</option><option value="G7">G7</option></select></label>
+        <label class="fld"><span><span data-i18n="ammo.bullet">Geschoss</span> <em id="uW">g</em></span><input id="inW" inputmode="decimal" autocomplete="off"></label>
+        <label class="fld"><span>BC <button type="button" class="help" data-help="bc" aria-expanded="false" aria-label="Hilfe BC" data-i18n-attr="aria-label:bc.help.aria">?</button></span><input id="inBC" inputmode="decimal" autocomplete="off"></label>
+        <label class="fld"><span data-i18n="ammo.model">Modell</span><select id="selModel"><option value="G1">G1</option><option value="G7">G7</option></select></label>
       </div>
-      <p class="helptext" id="help-bc" hidden>Ballistischer Koeffizient aus dem Herstellerdatenblatt. Fast alle Angaben sind G1. G7 nur, wenn ausdrücklich so angegeben (Langgeschosse, Match). Bei SwissP steht «ICAO»: das bezeichnet die Normatmosphäre, der Wert wird hier als G1 gerechnet (Annahme).</p>
+      <p class="helptext" id="help-bc" hidden data-i18n="bc.help">Ballistischer Koeffizient aus dem Herstellerdatenblatt. Fast alle Angaben sind G1. G7 nur, wenn ausdrücklich so angegeben (Langgeschosse, Match). Bei SwissP steht «ICAO»: das bezeichnet die Normatmosphäre, der Wert wird hier als G1 gerechnet (Annahme).</p>
       <div class="row2">
-        <label class="fld"><span>v0 Hersteller <em id="uV">m/s</em></span><input id="inV" inputmode="decimal" autocomplete="off"></label>
-        <label class="fld"><span>bei Lauf <em id="uBLr">mm</em></span><input id="inBLref" inputmode="decimal" autocomplete="off"></label>
+        <label class="fld"><span><span data-i18n="ammo.mv">v0 Hersteller</span> <em id="uV">m/s</em></span><input id="inV" inputmode="decimal" autocomplete="off"></label>
+        <label class="fld"><span><span data-i18n="ammo.blref">bei Lauf</span> <em id="uBLr">mm</em></span><input id="inBLref" inputmode="decimal" autocomplete="off"></label>
       </div>
       <p class="hint" id="loadNote"></p>
-      <div class="inline"><input class="inp" id="inCustName" placeholder="Name, z. B. Eigene 63 gr" autocomplete="off"><button type="button" class="btn" id="btnSaveLoad">Als eigene speichern</button></div>
-      <button type="button" class="btn" id="btnDelLoad" hidden>Diese eigene Laborierung löschen</button>
-    </section>
-
-    <section class="blk">
-      <div class="blk-head"><h2>Lauf und v0</h2><button type="button" class="help" data-help="barrel" aria-expanded="false" aria-label="Hilfe Lauf">?</button></div>
-      <p class="helptext" id="help-barrel" hidden>Die v0 auf der Schachtel gilt nur für den Testlauf des Herstellers (oft 508 bis 610 mm). Ein kürzerer Lauf verliert Geschwindigkeit. Gemessen wird ab Stossboden bis Mündung, ohne Mündungsaufsatz. Stgw 90: 528 mm. Unbekannt: 14.5″ für ein Kurz-AR, 16″ für ein Standard-AR. Hast du einen Chronographen, trag die gemessene v0 ein, die schlägt jede Schätzung.</p>
-      <label class="fld"><span>Dein Lauf <em id="uBL">mm</em></span><input id="inBL" inputmode="decimal" autocomplete="off"></label>
-      <div class="chips" id="blChips"></div>
-      <label class="check"><input type="checkbox" id="chkMeas"> v0 selbst gemessen (Chronograph)</label>
-      <label class="fld" id="measWrap" hidden><span>Gemessene v0 <em id="uVm">m/s</em></span><input id="inVm" inputmode="decimal" autocomplete="off"></label>
-      <div class="calc" id="vCalc"></div>
-    </section>
-
-    <section class="blk">
-      <div class="blk-head"><h2>Visierung</h2><button type="button" class="help" data-help="sight" aria-expanded="false" aria-label="Hilfe Visierung">?</button></div>
-      <p class="helptext" id="help-sight" hidden>Visierhöhe = Abstand Laufachse bis Mitte Optik. Sie setzt sich zusammen aus Rail über Laufachse (Waffe) und Montagehöhe (Rail bis Optikmitte, steht beim Montagehersteller). Unsicher? AR-15 und «Lower 1/3». Absolute Co-Witness bedeutet: Leuchtpunkt auf Höhe Kimme und Korn. Für exakte Werte selbst messen: Mitte Okular über Rail plus halber Laufdurchmesser abziehen.</p>
-      <label class="fld"><span>Waffe: Rail über Laufachse</span><select id="selRtb"></select></label>
-      <label class="fld"><span>Wert <em id="uRtb">mm</em></span><input id="inRtb" inputmode="decimal" autocomplete="off"></label>
-      <label class="fld"><span>Montagehöhe: Rail bis Optikmitte</span><select id="selMount"></select></label>
-      <label class="fld"><span>Wert <em id="uMount">mm</em></span><input id="inMount" inputmode="decimal" autocomplete="off"></label>
-      <p class="hint" id="rtbNote"></p>
-      <div class="total"><span>Visierhöhe</span><div><strong id="outSH"></strong> <em id="outSH2"></em></div></div>
-    </section>
-
-    <details class="blk" id="detEnv">
-      <summary>Umgebung und Feinheiten</summary>
-      <p class="hint">Standard ist ICAO (Meereshöhe, 15 °C). Unter 600 m ü. M. ist der Einfluss auf die Zero-Wahl gering.</p>
-      <div class="row2">
-        <label class="fld"><span>Höhe ü. M. <em id="uAlt">m</em></span><input id="inAlt" inputmode="decimal" autocomplete="off"></label>
-        <label class="fld"><span>Temperatur <em id="uTemp">°C</em></span><input id="inTemp" inputmode="decimal" autocomplete="off"></label>
-      </div>
-      <label class="fld"><span>Treffpunkt auf Zero-Distanz <em id="uOff">cm</em></span><input id="inOff" inputmode="decimal" autocomplete="off"></label>
-      <p class="hint">Positiv = Treffer liegt auf der Zero-Distanz über dem Haltepunkt (z. B. «4 cm hoch auf 100 m»).</p>
+      <div class="inline"><input class="inp" id="inCustName" placeholder="Name, z. B. Eigene 63 gr" data-i18n-attr="placeholder:ammo.custName" autocomplete="off"><button type="button" class="btn" id="btnSaveLoad" data-i18n="ammo.save">Als eigene speichern</button></div>
+      <button type="button" class="btn" id="btnDelLoad" hidden data-i18n="ammo.del">Diese eigene Laborierung löschen</button>
+    </div>
     </details>
-    <p class="store" id="storeNote"></p>
+
+    <details class="blk fold" open>
+      <summary class="blk-head"><h2 data-i18n="barrel.h">Lauf und v0</h2><button type="button" class="help" data-help="barrel" aria-expanded="false" aria-label="Hilfe Lauf" data-i18n-attr="aria-label:barrel.help.aria">?</button></summary>
+      <div class="blk-body">
+      <p class="helptext" id="help-barrel" hidden data-i18n="barrel.help">Die v0 auf der Schachtel gilt nur für den Testlauf des Herstellers (oft 508 bis 610 mm). Ein kürzerer Lauf verliert Geschwindigkeit. Gemessen wird ab Stossboden bis Mündung, ohne Mündungsaufsatz. Stgw 90: 528 mm. Unbekannt: 14.5″ für ein Kurz-AR, 16″ für ein Standard-AR. Hast du einen Chronographen, trag die gemessene v0 ein, die schlägt jede Schätzung.</p>
+      <label class="fld"><span><span data-i18n="barrel.yours">Dein Lauf</span> <em id="uBL">mm</em></span><input id="inBL" inputmode="decimal" autocomplete="off"></label>
+      <div class="chips" id="blChips"></div>
+      <label class="check"><input type="checkbox" id="chkMeas"> <span data-i18n="barrel.meas">v0 selbst gemessen (Chronograph)</span></label>
+      <label class="fld" id="measWrap" hidden><span><span data-i18n="barrel.measV">Gemessene v0</span> <em id="uVm">m/s</em></span><input id="inVm" inputmode="decimal" autocomplete="off"></label>
+      <div class="calc" id="vCalc"></div>
+    </div>
+    </details>
+
+    <details class="blk fold" open>
+      <summary class="blk-head"><h2 data-i18n="sight.h">Visierung</h2><button type="button" class="help" data-help="sight" aria-expanded="false" aria-label="Hilfe Visierung" data-i18n-attr="aria-label:sight.help.aria">?</button></summary>
+      <div class="blk-body">
+      <p class="helptext" id="help-sight" hidden data-i18n="sight.help">Visierhöhe = Abstand Laufachse bis Mitte Optik. Sie setzt sich zusammen aus Rail über Laufachse (Waffe) und Montagehöhe (Rail bis Optikmitte, steht beim Montagehersteller). Unsicher? AR-15 und «Lower 1/3». Absolute Co-Witness bedeutet: Leuchtpunkt auf Höhe Kimme und Korn. Für exakte Werte selbst messen: Mitte Okular über Rail plus halber Laufdurchmesser abziehen.</p>
+      <label class="fld"><span data-i18n="sight.rtb">Waffe: Rail über Laufachse</span><select id="selRtb"></select></label>
+      <label class="fld"><span><span data-i18n="sight.val">Wert</span> <em id="uRtb">mm</em></span><input id="inRtb" inputmode="decimal" autocomplete="off"></label>
+      <label class="fld"><span data-i18n="sight.mount">Montagehöhe: Rail bis Optikmitte</span><select id="selMount"></select></label>
+      <label class="fld"><span><span data-i18n="sight.val">Wert</span> <em id="uMount">mm</em></span><input id="inMount" inputmode="decimal" autocomplete="off"></label>
+      <p class="hint" id="rtbNote"></p>
+      <div class="total"><span data-i18n="sight.total">Visierhöhe</span><div><strong id="outSH"></strong> <em id="outSH2"></em></div></div>
+    </div>
+    </details>
+
+    <details class="blk fold" id="detEnv">
+      <summary class="blk-head"><h2 data-i18n="env.h">Umgebung und Feinheiten</h2></summary>
+      <div class="blk-body">
+      <p class="hint" data-i18n="env.hint">Standard ist ICAO (Meereshöhe, 15 °C). Unter 600 m ü. M. ist der Einfluss auf die Zero-Wahl gering.</p>
+      <div class="row2">
+        <label class="fld"><span><span data-i18n="env.alt">Höhe ü. M.</span> <em id="uAlt">m</em></span><input id="inAlt" inputmode="decimal" autocomplete="off"></label>
+        <label class="fld"><span><span data-i18n="env.temp">Temperatur</span> <em id="uTemp">°C</em></span><input id="inTemp" inputmode="decimal" autocomplete="off"></label>
+      </div>
+      <label class="fld"><span><span data-i18n="env.off">Treffpunkt auf Zero-Distanz</span> <em id="uOff">cm</em></span><input id="inOff" inputmode="decimal" autocomplete="off"></label>
+      <p class="hint" data-i18n="env.offHint">Positiv = Treffer liegt auf der Zero-Distanz über dem Haltepunkt (z. B. «4 cm hoch auf 100 m»).</p>
+      </div>
+    </details>
   </aside>
 
   <main class="work">
-    <section class="zerobar" aria-label="Zero-Distanz">
+    <div class="zb-sentinel" id="zbSentinel" aria-hidden="true"></div>
+    <section class="zerobar" aria-label="Zero-Distanz" data-i18n-attr="aria-label:zero.aria">
       <div class="zb-main">
         <div class="zb-num">
-          <span class="zb-tag">Zero</span>
-          <button type="button" id="zMinus" aria-label="Zero verringern">−</button>
-          <input id="zNum" inputmode="numeric" aria-label="Zero-Distanz" autocomplete="off">
-          <button type="button" id="zPlus" aria-label="Zero erhöhen">+</button>
+          <span class="zb-tag" data-i18n="zero.tag">Zero</span>
+          <button type="button" id="zMinus" aria-label="Zero verringern" data-i18n-attr="aria-label:zero.minus">−</button>
+          <input id="zNum" inputmode="numeric" aria-label="Zero-Distanz" data-i18n-attr="aria-label:zero.aria" autocomplete="off">
+          <button type="button" id="zPlus" aria-label="Zero erhöhen" data-i18n-attr="aria-label:zero.plus">+</button>
           <span class="zb-unit" id="zUnit">m</span><span class="hint" id="zEq"></span>
         </div>
         <div class="zb-slide">
-          <input type="range" id="zRange" aria-label="Zero-Distanz Regler">
+          <input type="range" id="zRange" aria-label="Zero-Distanz Regler" data-i18n-attr="aria-label:zero.range">
           <div class="chips" id="zChips"></div>
         </div>
-        <div style="display:flex;gap:6px;align-items:center">
-          <button type="button" class="help" data-help="zero" aria-expanded="false" aria-label="Hilfe Zero">?</button>
-          <button type="button" class="btn accent" id="btnSnap" title="Kopiert die aktuelle Variante, du bearbeitest danach die Kopie">Neue Variante</button>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+          <button type="button" class="help" data-help="zero" aria-expanded="false" aria-label="Hilfe Zero" data-i18n-attr="aria-label:zero.help.aria">?</button>
+          <button type="button" class="btn" id="btnPdf" title="Mit Vergleichen wird der Vergleich gedruckt, sonst die aktuelle Einstellung" data-i18n-attr="title:pdf.title;data-short:pdf.short">PDF erstellen</button>
+          <button type="button" class="btn accent" id="btnSnap" title="Kopiert die aktuelle Variante, du bearbeitest danach die Kopie" data-i18n-attr="title:snap.title;data-short:snap.short" data-i18n="snap.btn">Neue Variante</button>
         </div>
       </div>
-      <p class="helptext" id="help-zero" hidden>Varianten: Du bearbeitest immer genau eine Variante (dunkel hinterlegt). «Neue Variante» kopiert sie, danach änderst du die Kopie und die übrigen bleiben als Vergleich stehen. Klick auf eine Variante zum Bearbeiten, Auge zum Ein- und Ausblenden, × zum Löschen. Die Zero-Distanz ist die Distanz, auf der Treffpunkt und Haltepunkt zusammenfallen. Weil die Optik über dem Lauf sitzt, kreuzt die Flugbahn die Visierlinie zweimal: nahes und fernes Zero. Faustregeln für Karabiner: 50 m Zero ergibt ein fernes Zero um 200 m, flache Flugbahn bis etwa 250 m. 100 m für Präzision, 25 m für Kurzdistanz. Ziel: die grüne Zonen-Angabe möglichst weit. Mit «Zum Vergleich» merkst du dir eine Variante und spielst weiter.</p>
+      <p class="helptext" id="help-zero" hidden data-i18n="zero.help">Varianten: Du bearbeitest immer genau eine Variante (dunkel hinterlegt). «Neue Variante» kopiert sie, danach änderst du die Kopie und die übrigen bleiben als Vergleich stehen. Klick auf eine Variante zum Bearbeiten, Auge zum Ein- und Ausblenden, × zum Löschen. Die Zero-Distanz ist die Distanz, auf der Treffpunkt und Haltepunkt zusammenfallen. Weil die Optik über dem Lauf sitzt, kreuzt die Flugbahn die Visierlinie zweimal: nahes und fernes Zero. Faustregeln für Karabiner: 50 m Zero ergibt ein fernes Zero um 200 m, flache Flugbahn bis etwa 250 m. 100 m für Präzision, 25 m für Kurzdistanz. Ziel: die grüne Zonen-Angabe möglichst weit. Mit «Zum Vergleich» merkst du dir eine Variante und spielst weiter.</p>
       <div class="stats" id="zStats"></div>
       <div class="cmpbar" id="cmpBar"></div>
     </section>
@@ -309,720 +142,66 @@ details.blk[open]>summary::after{content:"−"}
     <div class="grid2">
       <section class="card">
         <div class="card-top">
-          <span class="card-h">Scheibe</span>
+          <span class="card-h" data-i18n="tgt.h">Scheibe</span>
           <div class="card-tools">
-            <select id="selTarget" aria-label="Scheibe"></select>
-            <button type="button" class="help" data-help="target" aria-expanded="false" aria-label="Hilfe Scheibe">?</button>
+            <select id="selTarget" aria-label="Scheibe" data-i18n-attr="aria-label:tgt.h"></select>
+            <button type="button" class="help" data-help="target" aria-expanded="false" aria-label="Hilfe Scheibe" data-i18n-attr="aria-label:tgt.help.aria">?</button>
+            <button type="button" class="btn icon-btn fs-btn" data-fs aria-pressed="false" aria-label="Vollbild" title="Vollbild" data-i18n-attr="aria-label:fs.open;title:fs.open"><svg class="fs-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><svg class="fs-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg></button>
           </div>
         </div>
         <div class="card-tools" id="ringTools" hidden>
-          <select id="selRing" aria-label="Ringscheibe"></select>
-          <span id="ringCustom" class="inline" hidden><label class="lbl" for="inR1">Ø Ring 1 cm</label><input id="inR1" inputmode="decimal" style="width:70px" autocomplete="off"><label class="lbl" for="inR10">Ø 10er cm</label><input id="inR10" inputmode="decimal" style="width:70px" autocomplete="off"></span>
+          <select id="selRing" aria-label="Ringscheibe" data-i18n-attr="aria-label:tgt.ring.aria"></select>
+          <span id="ringCustom" class="inline" hidden><label class="lbl" for="inR1" data-i18n="tgt.r1">Ø Ring 1 cm</label><input id="inR1" inputmode="decimal" style="width:70px" autocomplete="off"><label class="lbl" for="inR10" data-i18n="tgt.r10">Ø 10er cm</label><input id="inR10" inputmode="decimal" style="width:70px" autocomplete="off"></span>
         </div>
-        <p class="helptext" id="help-target" hidden>Gehalten wird immer auf die Mitte der Hauptzone im Körper (IPSC/USPSA A-Zone, IDPA −0, Mensch Brust, Ringscheibe Zentrum). Das grüne Band ist diese Hauptzone (bei Ringscheiben der 8er): grüne Werte in den Tabellen liegen noch darin. Die Punkte zeigen, wo die Kugel bei jeder Distanz relativ zum Haltepunkt trifft. Seitlich ist nichts gerechnet (kein Wind); bei mehreren Varianten sind die Punktreihen nur zur Lesbarkeit seitlich versetzt. Scheibenmasse sind Richtmasse.</p>
+        <p class="helptext" id="help-target" hidden data-i18n="tgt.help">Gehalten wird immer auf die Mitte der Hauptzone im Körper (IPSC/USPSA A-Zone, IDPA −0, Mensch Brust, Ringscheibe Zentrum). Das grüne Band ist diese Hauptzone (bei Ringscheiben der 8er): grüne Werte in den Tabellen liegen noch darin. Die Punkte zeigen, wo die Kugel bei jeder Distanz relativ zum Haltepunkt trifft. Seitlich ist nichts gerechnet (kein Wind); bei mehreren Varianten sind die Punktreihen nur zur Lesbarkeit seitlich versetzt. Scheibenmasse sind Richtmasse.</p>
         <div class="tgt-host" id="tgtHost"></div>
         <div class="legend" id="legendT"></div>
-        <p class="dists"><span class="lbl">Distanzen</span> <span id="distSum"></span> <button type="button" class="link" id="openDist">ändern</button></p>
+        <p class="dists"><span class="lbl" data-i18n="dist.h">Distanzen</span> <span id="distSum"></span> <button type="button" class="link" id="openDist" data-i18n="dist.open">ändern</button></p>
     <div class="setpanel" id="setPanel" hidden>
-            <div class="fld"><span>Distanzen auf Scheibe und in Tabellen <em id="uDist2"></em></span></div>
+            <div class="fld"><span><span data-i18n="dist.panel">Distanzen auf Scheibe und in Tabellen</span> <em id="uDist2"></em></span></div>
       <div class="chips" id="dChips"></div>
       <div class="distbar">
-        <div class="dist-add"><input class="inp" id="dAdd" inputmode="numeric" placeholder="eigene" aria-label="Distanz hinzufügen" autocomplete="off"><button type="button" class="btn" id="dAddBtn">Hinzufügen</button></div>
-        <div class="presets"><span class="lbl">Vorlagen</span><button type="button" data-preset="std">Standard bis 300</button><button type="button" data-preset="cqb">Kurz bis 100</button><button type="button" data-preset="carb">Karabiner bis 300</button><button type="button" data-preset="mid">Mittel bis 500</button><button type="button" data-preset="dmr">Weit bis 800</button><button type="button" data-preset="lr">Lang bis 1000</button></div>
+        <div class="dist-add"><input class="inp" id="dAdd" inputmode="numeric" placeholder="eigene" aria-label="Distanz hinzufügen" data-i18n-attr="placeholder:dist.addPh;aria-label:dist.addAria" autocomplete="off"><button type="button" class="btn" id="dAddBtn" data-i18n="dist.add">Hinzufügen</button></div>
+        <div class="presets"><span class="lbl" data-i18n="dist.presets">Vorlagen</span><button type="button" data-preset="std" data-i18n="preset.std">Standard bis 300</button><button type="button" data-preset="cqb" data-i18n="preset.cqb">Kurz bis 100</button><button type="button" data-preset="carb" data-i18n="preset.carb">Karabiner bis 300</button><button type="button" data-preset="mid" data-i18n="preset.mid">Mittel bis 500</button><button type="button" data-preset="dmr" data-i18n="preset.dmr">Weit bis 800</button><button type="button" data-preset="lr" data-i18n="preset.lr">Lang bis 1000</button></div>
       </div>
-      <p class="hint">Weniger Distanzen ergeben eine übersichtlichere Scheibe. Die Flugbahn-Grafik reicht immer bis zur grössten gewählten Distanz.</p>
+      <p class="hint" data-i18n="dist.hint">Weniger Distanzen ergeben eine übersichtlichere Scheibe. Die Flugbahn-Grafik reicht immer bis zur grössten gewählten Distanz.</p>
     </div>
 
       </section>
       <section class="card">
-        <div class="card-top"><span class="card-h">Flugbahn zur Visierlinie</span><div class="legend" id="legendG"></div></div>
+        <div class="card-top"><span class="card-h" data-i18n="graph.h">Flugbahn zur Visierlinie</span><div class="card-tools"><div class="legend" id="legendG"></div><button type="button" class="btn icon-btn fs-btn" data-fs aria-pressed="false" aria-label="Vollbild" title="Vollbild" data-i18n-attr="aria-label:fs.open;title:fs.open"><svg class="fs-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><svg class="fs-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg></button></div></div>
         <div class="graph-host" id="graphHost"></div>
-        <div class="readout" id="readout">Maus oder Finger über die Grafik führen für Werte.</div>
+        <div class="readout" id="readout" data-i18n="graph.readout">Maus oder Finger über die Grafik führen für Werte.</div>
       </section>
     </div>
 
     <section class="card">
-      <div class="card-top"><span class="card-h">Ballistik-Tabelle</span><span class="hint" id="tblNote"></span></div>
+      <div class="card-top"><span class="card-h" data-i18n="tbl.h">Ballistik-Tabelle</span><span class="hint" id="tblNote"></span></div>
       <div class="tbl-wrap" id="tblHost"></div>
     </section>
 
     <section class="card">
       <div class="card-top">
-        <span class="card-h">Vergleich</span>
-        <span class="hint">Alle eingeblendeten Varianten, Treffpunkt relativ zum Haltepunkt</span>
+        <span class="card-h" data-i18n="cmp.h">Vergleich</span>
+        <span class="hint" data-i18n="cmp.hint">Alle eingeblendeten Varianten, Treffpunkt relativ zum Haltepunkt</span>
       </div>
       <div id="snapHost"></div>
       <div class="tbl-wrap" id="cmpHost"></div>
     </section>
-    <p class="foot">Rechenmodell: Punktmasse mit G1/G7-Widerstandsfunktion, ebener Schuss, kein Wind, kein Drall. Lauflängen-Korrektur ist eine Schätzung. Richtwerte zur Wahl der Zero-Distanz, immer mit Beschuss bestätigen.</p>
+    <p class="foot" data-i18n="foot.model">Rechenmodell: Punktmasse mit G1/G7-Widerstandsfunktion, ebener Schuss, kein Wind, kein Drall. Lauflängen-Korrektur ist eine Schätzung. Richtwerte zur Wahl der Zero-Distanz, immer mit Beschuss bestätigen.</p>
   </main>
 </div>
+<footer class="site-foot gut"><span class="foot-name">Schussendlich: ZeroLab</span><div class="foot-links">
+  <div class="priv-wrap"><button type="button" class="link-btn" id="btnPriv" aria-haspopup="true" aria-expanded="false" aria-controls="privMenu" data-i18n="priv.link">Datenschutz</button>
+   <div class="set-menu priv-menu" id="privMenu" role="dialog" aria-label="Datenschutz" data-i18n-attr="aria-label:priv.link" hidden>
+    <h3 data-i18n="priv.link">Datenschutz</h3>
+    <p><b data-i18n="priv.resp">Verantwortlich:</b> <a href="mailto:schussendlich@gmail.com">schussendlich@gmail.com</a></p>
+    <p data-i18n="priv.local">ZeroLab ist eine statische Webseite. Alle Berechnungen laufen lokal in deinem Browser. Eingaben, eigene Laborierungen und Einstellungen werden nur auf deinem Gerät gespeichert (localStorage) und nicht übertragen. Es gibt keine Cookies, kein Tracking und keine Analyse.</p>
+    <p><b data-i18n="priv.hostH">Hosting:</b> <span data-i18n="priv.host">Die Seite wird über Cloudflare ausgeliefert. Dabei verarbeitet Cloudflare technisch notwendige Daten wie die IP-Adresse, um die Seite bereitzustellen und vor Missbrauch zu schützen. Cloudflare kann Daten auch ausserhalb der Schweiz verarbeiten, unter anderem in den USA.</span></p>
+   </div></div>
+  <a href="mailto:schussendlich@gmail.com" data-i18n="foot.contact">Kontakt</a>
+</div></footer>
 <div class="toast" id="toast" hidden></div>
-
-<script>
-"use strict";
-/* ---------- Widerstandstabellen (Mach, Cd) ---------- */
-const G1T=[[0,.2629],[.05,.2558],[.1,.2487],[.15,.2413],[.2,.2344],[.25,.2278],[.3,.2214],[.35,.2155],[.4,.2104],[.45,.2061],[.5,.2032],[.55,.202],[.6,.2034],[.7,.2165],[.725,.223],[.75,.2313],[.775,.2417],[.8,.2546],[.825,.2706],[.85,.2901],[.875,.3136],[.9,.3415],[.925,.3734],[.95,.4084],[.975,.4448],[1,.4805],[1.025,.5136],[1.05,.5427],[1.075,.5677],[1.1,.5883],[1.125,.6053],[1.15,.6191],[1.2,.6393],[1.25,.6518],[1.3,.6589],[1.35,.6621],[1.4,.6625],[1.45,.6607],[1.5,.6573],[1.55,.6528],[1.6,.6474],[1.65,.6413],[1.7,.6347],[1.75,.628],[1.8,.621],[1.85,.6141],[1.9,.6072],[1.95,.6003],[2,.5934],[2.05,.5867],[2.1,.5804],[2.15,.5743],[2.2,.5685],[2.25,.563],[2.3,.5577],[2.35,.5527],[2.4,.5481],[2.45,.5438],[2.5,.5397],[2.6,.5325],[2.7,.5264],[2.8,.5211],[2.9,.5168],[3,.5133],[3.1,.5105],[3.2,.5084],[3.3,.5067],[3.4,.5054],[3.5,.504],[3.6,.503],[3.7,.5022],[3.8,.5016],[3.9,.501],[4,.5006],[4.2,.4998],[4.4,.4995],[4.6,.4992],[4.8,.499],[5,.4988]];
-const G7T=[[0,.1198],[.05,.1197],[.1,.1196],[.15,.1194],[.2,.1193],[.25,.1194],[.3,.1194],[.35,.1194],[.4,.1193],[.45,.1193],[.5,.1194],[.55,.1193],[.6,.1194],[.65,.1197],[.7,.1202],[.725,.1207],[.75,.1215],[.775,.1226],[.8,.1242],[.825,.1266],[.85,.1306],[.875,.1368],[.9,.1464],[.925,.166],[.95,.2054],[.975,.2993],[1,.3803],[1.025,.4015],[1.05,.4043],[1.075,.4034],[1.1,.4014],[1.125,.3987],[1.15,.3955],[1.2,.3884],[1.25,.381],[1.3,.3732],[1.35,.3657],[1.4,.358],[1.5,.344],[1.55,.3376],[1.6,.3315],[1.65,.326],[1.7,.3209],[1.75,.316],[1.8,.3117],[1.85,.3078],[1.9,.3042],[1.95,.301],[2,.298],[2.05,.2951],[2.1,.2922],[2.15,.2892],[2.2,.2864],[2.25,.2835],[2.3,.2807],[2.35,.2779],[2.4,.2752],[2.45,.2725],[2.5,.2697],[2.55,.267],[2.6,.2643],[2.65,.2615],[2.7,.2588],[2.75,.2561],[2.8,.2533],[2.85,.2506],[2.9,.2479],[2.95,.2451],[3,.2424],[3.1,.2368],[3.2,.2313],[3.3,.2258],[3.4,.2205],[3.5,.2154],[3.6,.2106],[3.7,.206],[3.8,.2017],[3.9,.1975],[4,.1935],[4.2,.1861],[4.4,.1793],[4.6,.173],[4.8,.1672],[5,.1618]];
-const TABS={G1:{m:G1T.map(r=>r[0]),c:G1T.map(r=>r[1])},G7:{m:G7T.map(r=>r[0]),c:G7T.map(r=>r[1])}};
-function cd(t,M){const m=t.m,c=t.c,n=m.length;if(M<=m[0])return c[0];if(M>=m[n-1])return c[n-1];let lo=0,hi=n-1;while(hi-lo>1){const mid=(lo+hi)>>1;if(m[mid]>M)hi=mid;else lo=mid;}return c[lo]+(M-m[lo])/(m[hi]-m[lo])*(c[hi]-c[lo]);}
-
-/* ---------- Bibliothek ----------
- w: Geschoss g, mv: v0 m/s (Hersteller), bl: Referenzlauf in Zoll, bc, model.
- k: Skalenlänge der Lauf-Schätzung (Zoll), je Kaliber. */
-const LIB=[
- {id:'556',name:'.223 Rem / 5.56×45',k:8,loads:[
-  {id:'sp-ds1-41',name:'SwissP DS-1 4.1 g / 63 gr',w:4.1,mv:950,bl:23.62,bc:.3678,model:'G1',note:'SwissP Datenblatt: 950 ± 15 m/s bei 600 mm, BC 0.3678 (ICAO, hier als G1). Die angegebene Energie von 1773 J passt rechnerisch zu 930 m/s, nicht zu 950 m/s.'},
-  {id:'sp-ball-41',name:'SwissP Ball 4.1 g / 63 gr',w:4.1,mv:930,bl:23.62,bc:.3678,model:'G1',note:'SwissP Datenblatt: 930 ± 15 m/s bei 600 mm, 1773 J, BC 0.3678 (ICAO, hier als G1).'},
-  {id:'sp-ds1-36',name:'SwissP DS-1 3.6 g / 55 gr',w:3.6,mv:1010,bl:23.62,bc:.3372,model:'G1',note:'SwissP Datenblatt: 1010 ± 15 m/s bei 600 mm, 1836 J, BC 0.3372 (ICAO, hier als G1).'},
-  {id:'gp90',name:'GP 90 (4.1 g)',w:4.1,mv:905,bl:20.79,bc:.36,model:'G1',note:'v0 905 m/s ab Stgw 90 (528 mm). BC geschätzt, angenommen ähnlich SwissP 4.1 g.'},
-  {id:'m193',name:'M193 55 gr FMJ',w:3.56,mv:990,bl:20,bc:.243,model:'G1',note:'Typische Werte ab 20″ Lauf.'},
-  {id:'m855',name:'M855 / SS109 62 gr',w:4.02,mv:940,bl:20,bc:.304,model:'G1',note:'Typische Werte ab 20″ Lauf.'},
-  {id:'smk69',name:'69 gr SMK',w:4.47,mv:885,bl:18,bc:.301,model:'G1',note:'Typische Werte ab 18″ Lauf.'},
-  {id:'mk262',name:'Mk 262 77 gr OTM',w:4.99,mv:838,bl:18,bc:.372,model:'G1',note:'Typische Werte ab 18″ Lauf.'}]},
- {id:'300blk',name:'.300 AAC Blackout',k:4.5,loads:[
-  {id:'b110',name:'110 gr Überschall',w:7.13,mv:716,bl:16,bc:.29,model:'G1',note:'Typische Werte ab 16″.'},
-  {id:'b125',name:'125 gr OTM',w:8.1,mv:655,bl:16,bc:.35,model:'G1',note:'Typische Werte ab 16″.'},
-  {id:'b220',name:'220 gr Unterschall',w:14.26,mv:310,bl:9,bc:.61,model:'G1',note:'Unterschall. Typische Werte ab 9″.'}]},
- {id:'76239',name:'7.62×39',k:6,loads:[{id:'fmj123',name:'123 gr FMJ',w:7.97,mv:715,bl:16,bc:.275,model:'G1',note:'Typische Werte ab 16″.'}]},
- {id:'308',name:'.308 Win / 7.62×51',k:9,loads:[
-  {id:'m80',name:'M80 147 gr FMJ',w:9.53,mv:838,bl:22,bc:.40,model:'G1',note:'Typische Werte ab 22″.'},
-  {id:'smk168',name:'168 gr SMK',w:10.89,mv:808,bl:24,bc:.218,model:'G7',note:'Typische Werte ab 24″.'},
-  {id:'m118',name:'M118LR 175 gr SMK',w:11.34,mv:792,bl:24,bc:.243,model:'G7',note:'Typische Werte ab 24″.'}]},
- {id:'7555',name:'7.5×55 Swiss',k:9,loads:[{id:'gp11',name:'GP 11 (11.3 g)',w:11.3,mv:780,bl:22.95,bc:.50,model:'G1',note:'v0 ab Stgw 57 (583 mm). BC geschätzt.'}]},
- {id:'65cm',name:'6.5 Creedmoor',k:10,loads:[{id:'eldm140',name:'140 gr ELD Match',w:9.07,mv:826,bl:24,bc:.326,model:'G7',note:'Herstellerwerte ab 24″.'}]},
- {id:'338',name:'.338 Lapua Magnum',k:12,loads:[{id:'smk300',name:'300 gr SMK',w:19.44,mv:838,bl:27,bc:.768,model:'G1',note:'Typische Werte ab 27″.'}]},
- {id:'9mm',name:'9×19 (PCC)',k:3,loads:[
-  {id:'p124',name:'124 gr FMJ',w:8.04,mv:380,bl:16,bc:.15,model:'G1',note:'Typische Werte ab 16″ Karabiner, nicht ab Pistole.'},
-  {id:'p147',name:'147 gr FMJ',w:9.53,mv:300,bl:16,bc:.19,model:'G1',note:'Typische Werte ab 16″ Karabiner.'}]},
- {id:'22lr',name:'.22 LR',k:4,loads:[
-  {id:'sv40',name:'40 gr Standard Velocity',w:2.59,mv:330,bl:18,bc:.12,model:'G1',note:'Typische Werte ab Gewehrlauf.'},
-  {id:'hv40',name:'40 gr High Velocity',w:2.59,mv:383,bl:18,bc:.12,model:'G1',note:'Typische Werte ab Gewehrlauf.'}]},
-];
-const RTB=[
- {id:'ar15',name:'AR-15 / M4 Flat-Top (DI)',v:1.22},
- {id:'ar15p',name:'Piston AR mit Standard-Upper',v:1.22},
- {id:'arpr',name:'Piston AR mit erhöhter Schiene',v:1.59},
- {id:'ar10',name:'AR-10 / SR-25',v:1.32},
- {id:'free',name:'Frei wählbar',v:null}];
-const RTBNOTE={ar15:'Richtwert 1.22″, Quellen nennen 1.1 bis 1.22″.',ar15p:'Ein Piston-System ändert die Upper-Geometrie nicht: gleich wie DI, sofern ein Standard-Upper verwendet wird.',arpr:'Wert 1.59″ nach LETHAL Corp. Stark systemabhängig, nachmessen.',ar10:'Richtwert 1.32″ (DPMS-Muster).',free:'Eigenen Messwert eintragen.'};
-const MOUNTS=[
- {id:'abs',name:'Absolute Co-Witness 1.41″',v:1.41},
- {id:'l13',name:'Lower 1/3 Co-Witness 1.57″',v:1.57},
- {id:'l13h',name:'Lower 1/3 Co-Witness 1.64″',v:1.64},
- {id:'170',name:'1.70″',v:1.70},
- {id:'193',name:'1.93″ (Heads-up)',v:1.93},
- {id:'226',name:'2.26″ (z. B. Unity FAST)',v:2.26},
- {id:'291',name:'2.91″',v:2.91},
- {id:'free',name:'Frei wählbar',v:null}];
-const BL_CHIPS=[7.5,10.3,11.5,12.5,14.5,16,18,20,20.79,24];
-const RINGS={
- r100:{name:'Ringscheibe Ø 100 cm',d1:100,d10:10,black:40},
- issf50:{name:'ISSF 50 m Gewehr',d1:15.44,d10:1.04,black:11.24},
- issf25:{name:'ISSF 25 m Präzision',d1:50,d10:5,black:20},
- custom:{name:'Ringscheibe frei',d1:60,d10:6,black:24}};
-
-/* ---------- Einheiten ---------- */
-const YD=.9144, IN=.0254;
-const U={
- get m(){return S.units==='metric';},
- dist(m){return U.m?m:m/YD;}, toM(d){return U.m?d:d*YD;}, dU(){return U.m?'m':'yd';},
- drop(m){return U.m?m*100:m/IN;}, dropU(){return U.m?'cm':'in';},
- vel(v){return U.m?v:v/.3048;}, toVel(x){return U.m?x:x*.3048;}, velU(){return U.m?'m/s':'fps';},
- en(j){return U.m?j:j/1.35582;}, enU(){return U.m?'J':'ft·lbf';},
- w(g){return U.m?g:g/.0647989;}, toW(x){return U.m?x:x*.0647989;}, wU(){return U.m?'g':'gr';},
- len(inch){return U.m?inch*25.4:inch;}, toIn(x){return U.m?x/25.4:x;}, lenU(){return U.m?'mm':'in';},
- alt(m){return U.m?m:m/.3048;}, toAlt(x){return U.m?x:x*.3048;}, altU(){return U.m?'m':'ft';},
- temp(c){return U.m?c:c*9/5+32;}, toTemp(x){return U.m?x:(x-32)*5/9;}, tempU(){return U.m?'°C':'°F';},
- off(cm){return U.m?cm:cm/2.54;}, toOff(x){return U.m?x:x*2.54;}
-};
-const num=v=>{if(typeof v==='number')return v;const n=parseFloat(String(v).replace(',','.').replace(/[^\d.\-]/g,''));return isFinite(n)?n:NaN;};
-const fx=(n,d)=>(Math.round(n*10**d)/10**d).toFixed(d);
-const sgn=(n,d)=>{const r=fx(Math.abs(n),d);if(+r===0)return fx(0,d);return (n>0?'+':'−')+r;};
-const sgnA=(n,d)=>{const r=fx(Math.abs(n),d);if(+r===0)return fx(0,d);return (n>0?'+':'-')+r;};
-const thou=n=>String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,'’');
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-
-/* ---------- Zustand ---------- */
-const DPOOL=[5,10,15,25,35,50,75,100,150,200,250,300,350,400,450,500,600,700,800,900,1000];
-const DPRESET={std:[10,25,50,100,200,300],mid:[25,50,100,200,300,400,500],lr:[100,200,300,400,500,600,800,1000],cqb:[5,10,15,25,50,100],carb:[10,25,50,100,150,200,250,300],dmr:[100,200,300,400,500,600,700,800]};
-function defaults(){return{
- v:2,units:'metric',angle:'mrad',cal:'556',loadId:'sp-ds1-41',load:null,mod:false,
- bl:14.5,meas:false,vMeas:900,rtbP:'ar15',rtb:1.22,mountP:'l13',mount:1.57,
- alt:0,temp:15,off:0,zero:50,
- dist:{metric:DPRESET.std.slice(),imperial:DPRESET.std.slice()},
- extra:{metric:[],imperial:[]},
- target:'ipsc',zone:{},ring:'r100',r1:60,r10:6,cmp:true};}
-let S=defaults(); let VARS=[]; let CUSTOM=[];
-const VFIELDS=['cal','loadId','load','mod','bl','meas','vMeas','rtbP','rtb','mountP','mount','alt','temp','off','zero'];
-const clone=o=>JSON.parse(JSON.stringify(o));
-function pickV(src){const o={};VFIELDS.forEach(k=>o[k]=clone(src[k]));return o;}
-function activeVar(){return VARS.find(v=>v.id===S.av)||VARS[0];}
-function syncActive(){const a=activeVar();if(a)a.st=pickV(S);}
-function ensureVars(){if(!VARS.length){VARS=[{id:'v'+Date.now().toString(36),label:'A',ci:0,vis:true,st:pickV(S)}];S.av=VARS[0].id;}if(!VARS.some(v=>v.id===S.av)){S.av=VARS[0].id;Object.assign(S,clone(VARS[0].st));}}
-function vName(st){return st.load.name+(st.mod?' (angepasst)':'');}
-const vl=s=>'Variante '+s.name+(s.active&&VARS.length>1?' (bearbeitet)':'');
-function findLoad(cal,id){if(cal==='custom')return CUSTOM.find(l=>l.id===id)||null;const c=LIB.find(c=>c.id===cal);return c?c.loads.find(l=>l.id===id)||null:null;}
-function kFor(cal,loadId){if(cal==='custom'){const l=findLoad('custom',loadId);return l&&l.k||8;}const c=LIB.find(c=>c.id===cal);return c?c.k:8;}
-function calK(cal){return kFor(cal,S.loadId);}
-
-/* ---------- Speicher: Cookies (24 h), Fallback Browser-Speicher ---------- */
-const Store={mode:'mem',TTL:86400,
- init(){
-  const sec=location.protocol==='https:';
-  const attr=sec?';SameSite=None;Secure':';SameSite=Lax';
-  try{document.cookie='zl_t=1;max-age=60;path=/'+attr;if(document.cookie.indexOf('zl_t=1')>-1){this.mode='cookie';this.attr=attr;document.cookie='zl_t=;max-age=0;path=/'+attr;return;}}catch(e){}
-  try{localStorage.setItem('zl_t','1');localStorage.removeItem('zl_t');this.mode='local';}catch(e){this.mode='mem';}
- },
- cookies(){const o={};try{document.cookie.split(';').forEach(p=>{const i=p.indexOf('=');if(i<0)return;o[p.slice(0,i).trim()]=p.slice(i+1);});}catch(e){}return o;},
- set(key,val){
-  const s=JSON.stringify(val);
-  if(this.mode==='cookie'){
-   try{const enc=encodeURIComponent(s);const parts=[];for(let i=0;i<enc.length;i+=3000)parts.push(enc.slice(i,i+3000));
-    const c=this.cookies();Object.keys(c).forEach(k=>{if(k.indexOf('zl_'+key+'_')===0&&+k.split('_').pop()>=parts.length)document.cookie=k+'=;max-age=0;path=/'+this.attr;});
-    parts.forEach((p,i)=>{document.cookie='zl_'+key+'_'+i+'='+p+';max-age='+this.TTL+';path=/'+this.attr;});}catch(e){}
-  }else if(this.mode==='local'){try{localStorage.setItem('zl_'+key,JSON.stringify({exp:Date.now()+this.TTL*1000,v:val}));}catch(e){}}
- },
- get(key){
-  if(this.mode==='cookie'){const c=this.cookies();let s='',i=0;while(c['zl_'+key+'_'+i]!==undefined){s+=c['zl_'+key+'_'+i];i++;}if(!s)return null;try{return JSON.parse(decodeURIComponent(s));}catch(e){return null;}}
-  if(this.mode==='local'){try{const o=JSON.parse(localStorage.getItem('zl_'+key));if(!o||o.exp<Date.now()){localStorage.removeItem('zl_'+key);return null;}return o.v;}catch(e){return null;}}
-  return null;
- },
- wipe(){
-  try{const c=this.cookies();Object.keys(c).forEach(k=>{if(k.indexOf('zl_')===0)document.cookie=k+'=;max-age=0;path=/'+(this.attr||'');});}catch(e){}
-  try{Object.keys(localStorage).forEach(k=>{if(k.indexOf('zl_')===0)localStorage.removeItem(k);});}catch(e){}
- }};
-let saveT=null;
-function persist(){clearTimeout(saveT);saveT=setTimeout(()=>{Store.set('s',S);syncActive();Store.set('v',VARS);Store.set('c',CUSTOM);},250);}
-
-/* ---------- Ballistik ---------- */
-function vFactor(k,ref,L){const A=.656,f=x=>1-A*Math.exp(-x/k);return f(L)/f(ref);}
-function effMv(){if(S.meas&&S.vMeas>0)return S.vMeas;return S.load.mv*vFactor(calK(S.cal),S.load.bl,S.bl);}
-function atmo(alt,t){const T=t+273.15;const P=101325*Math.pow(Math.max(.2,1-2.25577e-5*alt),5.25588);return{rho:P/(287.05*T),c:331.3*Math.sqrt(T/273.15)};}
-function fly(p,th,xMax,rec){
- let x=0,y=-p.h,vx=p.mv*Math.cos(th),vy=p.mv*Math.sin(th),t=0,next=0;
- const K=p.rho*Math.PI/(8*p.bcSI),g=9.80665;
- if(rec){rec.y.push(y);rec.v.push(p.mv);rec.t.push(0);next=1;}
- while(x<xMax){
-  const v=Math.hypot(vx,vy);if(v<40)return{stop:true,y};
-  const dt=.5/v;
-  let k=K*cd(p.tab,v/p.c)*v;
-  const hx=vx-k*vx*dt/2,hy=vy+(-k*vy-g)*dt/2;
-  const hv=Math.hypot(hx,hy);k=K*cd(p.tab,hv/p.c)*hv;
-  const nx=x+hx*dt,ny=y+hy*dt,nvx=vx-k*hx*dt,nvy=vy+(-k*hy-g)*dt;
-  if(rec){const nv=Math.hypot(nvx,nvy);while(next<=nx&&next<=xMax){const f=(next-x)/(nx-x);rec.y.push(y+f*(ny-y));rec.v.push(v+f*(nv-v));rec.t.push(t+f*dt);next++;}}
-  else if(nx>=xMax){const f=(xMax-x)/(nx-x);return{y:y+f*(ny-y)};}
-  x=nx;y=ny;vx=nvx;vy=nvy;t+=dt;
- }
- return{y};
-}
-function compute(P,xMax){
- if(!(P.bc>0&&P.mv>0&&P.zero>0&&P.h>=0))return{ok:false,err:'Eingaben unvollständig.'};
- const at=atmo(P.alt,P.temp);
- const p={bcSI:P.bc*703.0696,tab:TABS[P.model]||TABS.G1,mv:P.mv,h:P.h,rho:at.rho,c:at.c};
- const f=th=>{const r=fly(p,th,P.zero,null);return r.stop?NaN:r.y-P.off;};
- let a=0,fa=f(a);if(isNaN(fa))return{ok:false,err:'Zero-Distanz liegt ausserhalb der Reichweite dieser Munition.'};
- let b=(P.h+P.off)/P.zero+.002,fb=f(b),th=b;
- for(let i=0;i<40;i++){if(isNaN(fb))return{ok:false,err:'Keine Lösung für diese Zero-Distanz.'};if(Math.abs(fb)<1e-7){th=b;break;}const c=b-fb*(b-a)/(fb-fa);a=b;fa=fb;b=c;fb=f(b);th=b;}
- const rec={y:[],v:[],t:[]};fly(p,th,Math.ceil(xMax),rec);
- const y=rec.y;let near=null,far=null,ax=0;
- for(let i=1;i<y.length;i++){
-  if(y[i-1]<0&&y[i]>=0&&near===null)near=i-1+y[i-1]/(y[i-1]-y[i]);
-  if(y[i-1]>=0&&y[i]<0&&far===null)far=i-1+y[i-1]/(y[i-1]-y[i]);
-  if(y[i]>y[ax])ax=i;}
- return{ok:true,y,v:rec.v,t:rec.t,near,far,apex:{x:ax,y:y[ax]},th,w:P.w,P};
-}
-function at(arr,m){if(!arr||m<0)return null;const i=Math.floor(m);if(i>=arr.length)return null;if(i===arr.length-1)return m===i?arr[i]:null;return arr[i]+(m-i)*(arr[i+1]-arr[i]);}
-
-/* ---------- Scheiben (cm, x um 0 zentriert, y ab Oberkante nach unten) ---------- */
-function ringGeo(){const R=S.ring==='custom'?{name:RINGS.custom.name,d1:S.r1,d10:S.r10,black:S.r1*.4}:RINGS[S.ring];return R;}
-const TARGETS={
- ipsc:{name:'IPSC Classic',geo(){return{x0:-23,w:46,h:58,zones:[
-   {id:'A',label:'A-Zone',top:3,bottom:35.5,cy:19.25},
-   {id:'C',label:'C-Zone',top:1,bottom:44,cy:22.5},
-   {id:'D',label:'Ganze Scheibe',top:0,bottom:58,cy:29}]};},
-  draw(C){return `<polygon points="-7.3,0 7.3,0 23,19.5 23,39 7.3,58 -7.3,58 -23,39 -23,19.5" fill="${C.card}" stroke="${C.cardLine}" stroke-width=".42"/>
-   <polygon points="-7,1 7,1 15,13 15,32 6.5,44 -6.5,44 -15,32 -15,13" fill="none" stroke="${C.cardLine}" stroke-width=".42"/>
-   <polygon points="-3.5,3 3.5,3 7.5,13 7.5,28 3,35.5 -3,35.5 -7.5,28 -7.5,13" fill="none" stroke="${C.cardLine}" stroke-width=".42"/>
-   ${lbl(C,0,26.3,'A')}${lbl(C,-11.3,26.3,'C')}${lbl(C,11.3,26.3,'C')}${lbl(C,-19.5,26.3,'D')}${lbl(C,19.5,26.3,'D')}`;}},
- uspsa:{name:'USPSA (mit Kopf)',geo(){return{x0:-22.86,w:45.72,h:76.2,zones:[
-   {id:'A',label:'A-Zone Körper',top:21,bottom:49,cy:35},
-   {id:'C',label:'C-Zone Körper',top:16.4,bottom:65.8,cy:41.1},
-   {id:'AH',label:'A-Zone Kopf',top:3.8,bottom:8.2,cy:6},
-   {id:'H',label:'Kopf gesamt',top:0,bottom:14.5,cy:7.25}]};},
-  draw(C){return `<polygon points="-8.6,0 8.6,0 8.6,14.5 14.5,14.5 22.86,23.9 22.86,64.9 13.6,76.2 -13.6,76.2 -22.86,64.9 -22.86,23.9 -14.5,14.5 -8.6,14.5" fill="${C.card}" stroke="${C.cardLine}" stroke-width=".42"/>
-   <polygon points="-12.4,16.4 12.4,16.4 16.8,23.9 16.8,51.3 7.4,65.8 -7.4,65.8 -16.8,51.3 -16.8,23.9" fill="none" stroke="${C.cardLine}" stroke-width=".42" stroke-dasharray="1 .5"/>
-   <rect x="-7.6" y="21" width="15.2" height="28" fill="none" stroke="${C.cardLine}" stroke-width=".42" stroke-dasharray="1 .5"/>
-   <rect x="-4.2" y="3.8" width="8.4" height="4.4" rx=".8" fill="none" stroke="${C.cardLine}" stroke-width=".42" stroke-dasharray="1 .5"/>
-   ${lbl(C,0,7.2,'A')}${lbl(C,0,39,'A')}${lbl(C,-12,39,'C')}${lbl(C,12,39,'C')}${lbl(C,-19.6,39,'D')}${lbl(C,19.6,39,'D')}`;}},
- idpa:{name:'IDPA',geo(){return{x0:-22.86,w:45.72,h:76.2,zones:[
-   {id:'B0',label:'−0 Körper (Ø 20 cm)',top:21.84,bottom:42.16,cy:32},
-   {id:'H0',label:'−0 Kopf (Ø 10 cm)',top:1.6,bottom:11.8,cy:6.7},
-   {id:'B1',label:'−1 Körper',top:17,bottom:68,cy:42.5}]};},
-  draw(C){return `<polygon points="-8.95,0 8.95,0 8.95,14.3 14.9,14.3 22.86,22.9 22.86,62.9 13.9,76.2 -13.9,76.2 -22.86,62.9 -22.86,22.9 -14.9,14.3 -8.95,14.3" fill="${C.card}" stroke="${C.cardLine}" stroke-width=".42"/>
-   <polygon points="-10,17 10,17 15.2,22 15.2,60 9,68 -9,68 -15.2,60 -15.2,22" fill="none" stroke="${C.cardLine}" stroke-width=".38" opacity=".9"/>
-   <circle cx="0" cy="6.7" r="5.08" fill="none" stroke="${C.cardLine}" stroke-width=".42"/>
-   <circle cx="0" cy="32" r="10.16" fill="none" stroke="${C.cardLine}" stroke-width=".42"/>
-   ${lbl(C,0,8,'−0')}${lbl(C,0,33.2,'−0')}${lbl(C,0,56,'−1')}${lbl(C,-19,46,'−3')}${lbl(C,19,46,'−3')}`;}},
- man:{name:'Mensch (Silhouette)',geo(){return{x0:-26,w:52,h:96,zones:[
-   {id:'T',label:'Brust (Ø 20 cm)',top:34,bottom:54,cy:44},
-   {id:'O',label:'Oberkörper',top:28,bottom:80,cy:54},
-   {id:'K',label:'Kopf',top:1,bottom:23,cy:12},
-   {id:'G',label:'Ganze Silhouette',top:1,bottom:96,cy:48}]};},
-  draw(C){const sil=C.sil||C.ink;return `<ellipse cx="0" cy="12" rx="8.2" ry="11" fill="${sil}"/>
-   <path d="M-5.6,19 L5.6,19 L6.4,26.5 C12,27.5 19,28 22.4,31.5 C24.6,34 25.2,40 25.6,48 L26,70 L25.2,96 L20.2,96 L20,72 L19.3,52 L18.4,46.5 L17.4,60 L16.9,80 L17.3,96 L-17.3,96 L-16.9,80 L-17.4,60 L-18.4,46.5 L-19.3,52 L-20,72 L-20.2,96 L-25.2,96 L-26,70 L-25.6,48 C-25.2,40 -24.6,34 -22.4,31.5 C-19,28 -12,27.5 -6.4,26.5 Z" fill="${sil}"/>
-   <circle cx="0" cy="44" r="10" fill="none" stroke="${C.card}" stroke-width=".55" stroke-dasharray="1.2 .8"/>
-   <ellipse cx="0" cy="12" rx="5" ry="6.5" fill="none" stroke="${C.card}" stroke-width=".5" stroke-dasharray="1.2 .8"/>`;}},
- ring:{name:'Ringscheibe',geo(){const R=ringGeo();const st=(R.d1-R.d10)/9;const zones=[];
-   for(let n=10;n>=1;n--){const d=R.d10+(10-n)*st;zones.push({id:'r'+n,label:'Ring '+n+' (Ø '+fx(d,d<5?2:1)+' cm)',top:R.d1/2-d/2,bottom:R.d1/2+d/2,cy:R.d1/2});}
-   return{x0:-R.d1/2,w:R.d1,h:R.d1,zones,ring:R};},
-  draw(C,g){const R=g.ring,st=(R.d1-R.d10)/9,cy=R.d1/2,sw=R.d1/320;let s=`<circle cx="0" cy="${cy}" r="${R.d1/2}" fill="${C.ringW}" stroke="${C.ringB}" stroke-width="${sw}"/>`;
-   s+=`<circle cx="0" cy="${cy}" r="${R.black/2}" fill="${C.ringB}"/>`;
-   for(let n=1;n<=10;n++){const d=R.d10+(10-n)*st;const inB=d<=R.black+1e-9;s+=`<circle cx="0" cy="${cy}" r="${d/2}" fill="none" stroke="${inB?C.ringW:C.ringB}" stroke-width="${sw}"/>`;
-    if(n<10&&n%1===0){const x=(d/2+(d-st)/2)/2;const fs=st*.32;s+=`<text x="${x}" y="${cy+fs*.35}" font-size="${fs}" text-anchor="middle" fill="${inB?C.ringW:C.ringB}" font-family="IBM Plex Mono,monospace">${n}</text>`;}}
-   return s;}}
-};
-function lbl(C,x,y,t){return `<text x="${x}" y="${y}" font-size="3.2" text-anchor="middle" fill="${C.cardInk}" opacity=".55" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="600">${t}</text>`;}
-function curTarget(){if(!TARGETS[S.target])S.target='ipsc';const T=TARGETS[S.target];const g=T.geo();const z=S.target==='ring'?(g.zones.find(z=>z.id==='r8')||g.zones[0]):g.zones[0];
- const aimY=g.zones[0].cy;/* Haltepunkt immer Mitte der Hauptzone */
- return{T,g,z,aimY,hi:(aimY-z.top)/100,lo:(aimY-z.bottom)/100};}
-
-/* ---------- Paletten ---------- */
-const SCREEN={card:'var(--card)',cardLine:'var(--card-line)',cardInk:'var(--card-ink)',ringB:'var(--ring-black)',ringW:'var(--ring-white)',sil:'var(--sil)',ink:'var(--ink)',muted:'var(--muted)',line:'var(--line)',grid:'var(--grid)',panel:'var(--panel)',wall:'var(--wall)',good:'var(--good)',goodSoft:'var(--good-soft)',bad:'var(--bad)',accent:'var(--accent)',ser:i=>`var(--s${i+1})`};
-const PRINTC={card:'#D6C4A0',cardLine:'#5A4527',cardInk:'#4A3B24',ringB:'#1B1B1B',ringW:'#F7F5EF',sil:'#2B3036',ink:'#161B21',muted:'#5A646F',line:'#C9D0D7',grid:'#E3E7EB',panel:'#FFFFFF',wall:'#FFFFFF',good:'#2C7A4C',goodSoft:'#DAEEE1',bad:'#B23528',accent:'#D4511C',ser:i=>['#D4511C','#2D64A8','#2E8757','#8B4BB0','#A87C0E','#13868A','#C2416B'][i%7]};
-
-/* ---------- Serien ---------- */
-function paramsFrom(st){const mv=st.meas&&st.vMeas>0?st.vMeas:st.load.mv*vFactor(kFor(st.cal,st.loadId),st.load.bl,st.bl);return{bc:st.load.bc,model:st.load.model,mv,w:st.load.w,h:(st.rtb+st.mount)*IN,alt:st.alt,temp:st.temp,zero:st.zero,off:st.off/100};}
-function curParams(){return paramsFrom(S);}
-function selDistM(){return S.dist[S.units].slice().sort((a,b)=>a-b).map(d=>({d,m:U.toM(d)}));}
-function series(){
- syncActive();const a=activeVar();const cp=curParams();
- const out=[{key:a.id,name:a.label,ci:a.ci,P:cp,desc:descParams(vName(S),cp),st:a.st,active:true}];
- VARS.forEach(v=>{if(v.id!==a.id&&v.vis){const P=paramsFrom(v.st);out.push({key:v.id,name:v.label,ci:v.ci,P,desc:descParams(vName(v.st),P),st:v.st});}});
- const dm=selDistM();const xMax=Math.max(dm.length?dm[dm.length-1].m:100,...out.map(o=>o.P.zero),800)*1.02+2;
- out.forEach(o=>{o.res=compute(o.P,Math.min(xMax,2500));});
- return{list:out,xMax,dm};
-}
-function descParams(name,P){return `${name} · ${fx(U.vel(P.mv),0)} ${U.velU()} · BC ${P.bc} ${P.model} · Visierhöhe ${fx(U.len(P.h/IN),U.m?1:2)} ${U.lenU()}`;}
-
-/* ---------- Scheibe zeichnen ---------- */
-function targetSVG(C,ser,dm,opt){
- opt=opt||{};
- const {T,g,z,aimY}=curTarget();
- const n=ser.length;
- const pts=ser.map(s=>dm.map(o=>{const y=s.res.ok?at(s.res.y,o.m):null;return y==null?null:{d:o.d,m:o.m,cm:y*100,sy:aimY-y*100};}));
- let vTop=0,vBot=g.h;const ext=g.h*.35;
- pts.flat().forEach(p=>{if(!p)return;vTop=Math.min(vTop,Math.max(p.sy,-ext));vBot=Math.max(vBot,Math.min(p.sy,g.h+ext));});
- const pad=g.h*.05;vTop-=pad;vBot+=pad;
- const vh=vBot-vTop;const fs=vh*.03,r=vh*.0105;
- const colX=g.x0+g.w+fs*1.4;               /* Beschriftungsspalte rechts der Scheibe */
- const vx=g.x0-fs*2.2,vw=(colX+fs*10.5)-vx;
- let s=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vx} ${vTop} ${vw} ${vh}"${opt.px?` width="${opt.px}" height="${opt.px*vh/vw}"`:''} font-family="IBM Plex Mono,monospace">`;
- if(opt.bg)s+=`<rect x="${vx}" y="${vTop}" width="${vw}" height="${vh}" fill="${C.wall}"/>`;
- s+=`<g>${T.draw(C,g)}</g>`;
- /* Toleranzzone als Balken links */
- s+=`<line x1="${g.x0-fs*.7}" x2="${g.x0-fs*.7}" y1="${z.top}" y2="${z.bottom}" stroke="${C.good}" stroke-width="${r*.6}"/>`;
- s+=`<text x="${g.x0-fs*1.25}" y="${(z.top+z.bottom)/2}" font-size="${fs*.75}" fill="${C.good}" text-anchor="middle" transform="rotate(-90 ${g.x0-fs*1.25} ${(z.top+z.bottom)/2})" font-family="IBM Plex Sans,Arial,sans-serif">Zone</text>`;
- /* Haltepunkt */
- s+=`<g stroke="${C.panel}" stroke-width="${r*.75}" fill="none"><circle cx="0" cy="${aimY}" r="${r*1.9}"/><line x1="${-r*3.4}" x2="${-r*1.2}" y1="${aimY}" y2="${aimY}"/><line x1="${r*1.2}" x2="${r*3.4}" y1="${aimY}" y2="${aimY}"/><line y1="${aimY-r*3.4}" y2="${aimY-r*1.2}" x1="0" x2="0"/><line y1="${aimY+r*1.2}" y2="${aimY+r*3.4}" x1="0" x2="0"/></g>`;
- s+=`<g stroke="${C.ink}" stroke-width="${r*.3}" fill="none"><circle cx="0" cy="${aimY}" r="${r*1.9}"/><line x1="${-r*3.4}" x2="${-r*1.2}" y1="${aimY}" y2="${aimY}"/><line x1="${r*1.2}" x2="${r*3.4}" y1="${aimY}" y2="${aimY}"/><line y1="${aimY-r*3.4}" y2="${aimY-r*1.2}" x1="0" x2="0"/><line y1="${aimY+r*1.2}" y2="${aimY+r*3.4}" x1="0" x2="0"/></g>`;
- const minY=vTop+fs*1.1,maxY=vBot-fs*1.6;
- const labels=[];
- ser.forEach((se,i)=>{
-  const off=i===0?0:(i%2?1:-1)*Math.ceil(i/2)*r*2.6;/* bearbeitete Variante immer mittig */const col=C.ser(se.ci);const P=pts[i].filter(Boolean);const rr=i===0?r:r*.8;
-  if(n>1&&P.length>1){const pl=P.map(p=>`${off},${Math.max(minY,Math.min(maxY,p.sy))}`).join(' ');s+=`<polyline points="${pl}" fill="none" stroke="${col}" stroke-width="${r*.3}" opacity=".5"/>`;}
-  P.forEach(p=>{
-   const clipped=p.sy<minY||p.sy>maxY;const y=Math.max(minY,Math.min(maxY,p.sy));
-   if(clipped){const up=p.sy<minY;s+=`<path d="M${off-r*1.4},${y+(up?r:-r)} L${off+r*1.4},${y+(up?r:-r)} L${off},${y+(up?-r*1.4:r*1.4)} Z" fill="${col}" stroke="${C.panel}" stroke-width="${r*.25}"/>`;}
-   else s+=`<circle cx="${off}" cy="${y}" r="${rr}" fill="${col}" stroke="${C.panel}" stroke-width="${r*.3}"${i?' opacity=".85"':''}/>`;
-   if(i===0)labels.push({x:off,y,ty:y,d:p.d,v:U.drop(p.cm/100),clipped});
-  });
- });
- /* Beschriftung: Spalte, überlappungsfrei verteilt, mit Führungslinie */
- labels.sort((a,b)=>a.y-b.y);const gap=fs*1.25;
- /* nahe beieinander liegende Treffer zu einer Zeile zusammenfassen */
- const grp=[];labels.forEach(L=>{const last=grp[grp.length-1];if(last&&!L.clipped&&!last.clipped&&L.y-last.items[last.items.length-1].y<gap*.55)last.items.push(L);else grp.push({items:[L],clipped:L.clipped});});
- grp.forEach(G=>{G.y=G.items.reduce((a,L)=>a+L.y,0)/G.items.length;G.ty=G.y;});
- for(let i=0;i<grp.length;i++){grp[i].ty=Math.max(grp[i].y,i?grp[i-1].ty+gap:minY);}
- for(let i=grp.length-1;i>=0;i--){const lim=i===grp.length-1?maxY:grp[i+1].ty-gap;if(grp[i].ty>lim)grp[i].ty=lim;}
- const du=U.dU(),vu=U.dropU(),dec=U.m?0:1;
- grp.forEach(G=>{
-  const ty=G.ty,ds=G.items.map(L=>L.d).join(' · ');
-  const vs=G.items.map(L=>+fx(L.v,dec));const vmin=Math.min(...vs),vmax=Math.max(...vs);
-  const val=vmin===vmax?sgn(vmin,dec):sgn(vmin,dec)+' bis '+sgn(vmax,dec);
-  G.items.forEach(L=>{s+=`<line x1="${L.x+r*1.1}" y1="${L.y}" x2="${g.x0+g.w+fs*.3}" y2="${L.y}" stroke="${C.muted}" stroke-width="${r*.24}" opacity=".95"/>`;});
-  const ex=g.x0+g.w+fs*.3;const y0=Math.min(...G.items.map(L=>L.y)),y1=Math.max(...G.items.map(L=>L.y));
-  if(y1-y0>r*.5)s+=`<line x1="${ex}" y1="${y0}" x2="${ex}" y2="${y1}" stroke="${C.muted}" stroke-width="${r*.24}" opacity=".95"/>`;
-  s+=`<line x1="${ex}" y1="${G.y}" x2="${colX-fs*.25}" y2="${ty}" stroke="${C.muted}" stroke-width="${r*.24}" opacity=".95"/>`;
-  s+=`<text x="${colX}" y="${ty+fs*.35}" font-size="${fs}" fill="${C.ink}"><tspan font-weight="600">${ds} ${du}</tspan><tspan fill="${C.muted}" font-size="${fs*.85}"> ${val} ${vu}</tspan></text>`;
- });
- /* Massstab und Legende */
- const sb=g.w>30?10:(g.w>10?5:1);
- s+=`<g><path d="M${g.x0},${vBot-fs*.95} V${vBot-fs*.6} H${g.x0+sb} V${vBot-fs*.95}" fill="none" stroke="${C.ink}" stroke-width="${r*.4}"/><text x="${g.x0+sb+fs*.4}" y="${vBot-fs*.35}" font-size="${fs*.7}" fill="${C.muted}">${U.m?sb+' cm':fx(sb/2.54,1)+' in'}</text></g>`;
- return s+'</svg>';
-}
-
-/* ---------- Flugbahn zeichnen ---------- */
-function niceTicks(a,b,n){const span=b-a;if(span<=0)return[a];const raw=span/n;const p=Math.pow(10,Math.floor(Math.log10(raw)));const m=raw/p;const st=(m<1.5?1:m<3?2:m<7?5:10)*p;const out=[];for(let v=Math.ceil(a/st)*st;v<=b+1e-9;v+=st)out.push(+v.toFixed(10));return out;}
-let GMAP=null;
-function graphSVG(C,ser,dm,opt){
- opt=opt||{};const W=opt.w||860,H=opt.h||400,ml=54,mr=18,mt=18,mb=40;const pw=W-ml-mr,ph=H-mt-mb;
- const xMaxD=Math.max(dm.length?dm[dm.length-1].d:100,U.dist(S.zero)*1.15);
- const {z,hi:hiM,lo:loM}=curTarget();const hi=U.drop(hiM),lo=U.drop(loM);
- let yMin=Math.min(0,lo),yMax=Math.max(0,hi);
- const N=320;const curves=ser.map(se=>{if(!se.res.ok)return[];const a=[];for(let i=0;i<=N;i++){const d=xMaxD*i/N;const y=at(se.res.y,U.toM(d));if(y==null)break;const yd=U.drop(y);a.push([d,yd]);}return a;});
- curves.flat().forEach(([,y])=>{yMin=Math.min(yMin,y);yMax=Math.max(yMax,y);});
- const span=yMax-yMin||1;yMax+=span*.08;yMin-=span*.06;
- const X=d=>ml+d/xMaxD*pw,Y=y=>mt+(yMax-y)/(yMax-yMin)*ph;
- let s=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}"${opt.px?` width="${W}" height="${H}"`:''} font-family="IBM Plex Mono,monospace" font-size="11">`;
- if(opt.bg)s+=`<rect width="${W}" height="${H}" fill="${C.panel}"/>`;
- /* Zone */
- const zt=Y(Math.min(hi,yMax)),zb=Y(Math.max(lo,yMin));
- if(zb>zt)s+=`<rect x="${ml}" y="${zt}" width="${pw}" height="${zb-zt}" fill="${C.goodSoft}" opacity=".9"/>`;
- s+=`<text x="${ml+6}" y="${zt+13}" fill="${C.good}" font-family="IBM Plex Sans,Arial,sans-serif" font-size="11">${esc(z.label)}</text>`;
- /* Raster */
- niceTicks(0,xMaxD,9).forEach(t=>{s+=`<line x1="${X(t)}" x2="${X(t)}" y1="${mt}" y2="${mt+ph}" stroke="${C.grid}"/><text x="${X(t)}" y="${H-mb+16}" text-anchor="middle" fill="${C.muted}">${t}</text>`;});
- niceTicks(yMin,yMax,7).forEach(t=>{s+=`<line x1="${ml}" x2="${ml+pw}" y1="${Y(t)}" y2="${Y(t)}" stroke="${C.grid}"/><text x="${ml-6}" y="${Y(t)+4}" text-anchor="end" fill="${C.muted}">${sgnA(t,Math.abs(t)<10&&t%1?1:0)}</text>`;});
- s+=`<text x="${ml+pw}" y="${H-6}" text-anchor="end" fill="${C.muted}" font-family="IBM Plex Sans,Arial,sans-serif">Distanz ${U.dU()}</text>`;
- s+=`<text x="12" y="${mt+ph/2}" fill="${C.muted}" text-anchor="middle" transform="rotate(-90 12 ${mt+ph/2})" font-family="IBM Plex Sans,Arial,sans-serif">Treffpunkt ${U.dropU()} über/unter Haltepunkt</text>`;
- /* Visierlinie */
- s+=`<line x1="${ml}" x2="${ml+pw}" y1="${Y(0)}" y2="${Y(0)}" stroke="${C.ink}" stroke-width="1.3" stroke-dasharray="6 4"/>`;
- s+=`<text x="${ml+pw-4}" y="${Y(0)-6}" text-anchor="end" fill="${C.ink}" font-family="IBM Plex Sans,Arial,sans-serif">Visierlinie</text>`;
- /* Kurven, aktuelle zuletzt */
- ser.map((se,i)=>i).reverse().forEach(i=>{const a=curves[i];if(!a.length)return;s+=`<polyline fill="none" stroke="${C.ser(ser[i].ci)}" stroke-width="${i===0?2.6:1.8}" stroke-linejoin="round" points="${a.map(([d,y])=>X(d).toFixed(1)+','+Y(y).toFixed(1)).join(' ')}"/>`;});
- /* Distanzmarken der aktuellen Serie */
- const c0=ser[0];
- if(c0.res.ok)dm.forEach(o=>{const y=at(c0.res.y,o.m);if(y==null||o.d>xMaxD)return;s+=`<circle cx="${X(o.d)}" cy="${Y(U.drop(y))}" r="3.4" fill="${C.ser(0)}" stroke="${C.panel}" stroke-width="1.4"/>`;});
- /* Zero und fernes Zero */
- /* Zero-Linien und Nulldurchgänge aller Varianten, je in ihrer Farbe */
- ser.forEach((se,i)=>{
-  const col=C.ser(se.ci),zd=U.dist(se.P.zero),nm=se.name?se.name+': ':'';
-  if(zd<=xMaxD){const right=X(zd)>ml+pw-90;
-   s+=`<line x1="${X(zd)}" x2="${X(zd)}" y1="${mt}" y2="${mt+ph}" stroke="${col}" stroke-width="${i?1:1.4}" stroke-dasharray="4 3"/>`;
-   s+=`<text x="${X(zd)+(right?-5:5)}" y="${mt+12+i*14}" text-anchor="${right?'end':'start'}" fill="${col}" font-weight="600" stroke="${C.panel}" stroke-width="3" paint-order="stroke">${nm}Zero ${fx(zd,0)}</text>`;}
-  if(!se.res.ok)return;
-  [[se.res.near,'1.'],[se.res.far,'2.']].forEach(([m,t])=>{if(m==null||Math.abs(m-se.P.zero)<=2)return;const d=U.dist(m);if(d>xMaxD)return;
-   s+=`<path d="M${X(d)},${Y(0)-6} l5,6 l-5,6 l-5,-6 Z" fill="${col}" stroke="${C.panel}" stroke-width="1"/><text x="${X(d)+7}" y="${Y(0)+17+i*13}" fill="${col}" font-weight="600" stroke="${C.panel}" stroke-width="3" paint-order="stroke">${nm}${t} Zero ${fx(d,0)}</text>`;});
- });
- if(!opt.px)s+=`<line id="hvLine" x1="0" x2="0" y1="${mt}" y2="${mt+ph}" stroke="${C.muted}" stroke-width="1" visibility="hidden"/><rect id="hvArea" x="${ml}" y="${mt}" width="${pw}" height="${ph}" fill="transparent" style="cursor:crosshair"/>`;
- GMAP=opt.px?GMAP:{ml,pw,W,xMaxD,X};
- return s+'</svg>';
-}
-
-/* ---------- Zone-Bereiche ---------- */
-function zoneRanges(res,xMaxM){
- const {z,hi,lo}=curTarget();
- const out=[];let st=null;const n=Math.min(res.y.length-1,Math.floor(xMaxM));
- for(let i=0;i<=n;i++){const inside=res.y[i]>=lo&&res.y[i]<=hi;if(inside&&st===null)st=i;if(!inside&&st!==null){out.push([st,i-1]);st=null;}}
- if(st!==null)out.push([st,n]);return{out,lo,hi,z,end:n};
-}
-
-/* ---------- UI ---------- */
-const $=s=>document.querySelector(s);
-function fillSelect(el,items,val){el.innerHTML=items.map(i=>`<option value="${esc(i.v)}"${i.v===val?' selected':''}>${esc(i.t)}</option>`).join('');}
-function setSeg(id,val){document.querySelectorAll('#'+id+' button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===val)));}
-function toast(t){const e=$('#toast');e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2600);}
-
-function renderSetup(){
- setSeg('segUnits',S.units);setSeg('segAngle',S.angle);
- const cals=LIB.map(c=>({v:c.id,t:c.name}));cals.push({v:'custom',t:'Eigene Laborierungen'+(CUSTOM.length?` (${CUSTOM.length})`:'')});
- fillSelect($('#selCal'),cals,S.cal);
- const loads=S.cal==='custom'?CUSTOM.map(l=>({v:l.id,t:l.name})):LIB.find(c=>c.id===S.cal).loads.map(l=>({v:l.id,t:l.name}));
- if(!loads.length)loads.push({v:'',t:'Noch keine gespeichert'});
- fillSelect($('#selLoad'),loads,S.loadId);
- $('#uW').textContent=U.wU();$('#uV').textContent=U.velU();$('#uVm').textContent=U.velU();$('#uBLr').textContent=U.lenU();$('#uBL').textContent=U.lenU();
- $('#uRtb').textContent=U.lenU();$('#uMount').textContent=U.lenU();$('#uAlt').textContent=U.altU();$('#uTemp').textContent=U.tempU();$('#uOff').textContent=U.dropU();
- const L=S.load;
- $('#inW').value=fx(U.w(L.w),U.m?2:1);$('#inBC').value=L.bc;$('#selModel').value=L.model;
- $('#inV').value=fx(U.vel(L.mv),0);$('#inBLref').value=fx(U.len(L.bl),U.m?0:2);
- $('#inBL').value=fx(U.len(S.bl),U.m?0:2);$('#chkMeas').checked=S.meas;$('#measWrap').hidden=!S.meas;$('#inVm').value=fx(U.vel(S.vMeas),0);
- const src=findLoad(S.cal,S.loadId);
- $('#loadNote').textContent=(S.mod?'Angepasst. Bibliothek: ':'')+(src&&src.note?src.note:(S.cal==='custom'?'Eigene Laborierung.':''));
- $('#btnDelLoad').hidden=!(S.cal==='custom'&&src);
- fillSelect($('#selRtb'),RTB.map(r=>({v:r.id,t:r.name+(r.v?` (${r.v}″)`:'')})),S.rtbP);
- fillSelect($('#selMount'),MOUNTS.map(r=>({v:r.id,t:r.name})),S.mountP);
- $('#inRtb').value=fx(U.len(S.rtb),U.m?1:2);$('#inMount').value=fx(U.len(S.mount),U.m?1:2);
- $('#rtbNote').textContent=RTBNOTE[S.rtbP]||'';
- $('#inAlt').value=fx(U.alt(S.alt),0);$('#inTemp').value=fx(U.temp(S.temp),0);$('#inOff').value=fx(U.off(S.off),1);
- $('#blChips').innerHTML=BL_CHIPS.map(b=>`<button type="button" class="chip small" data-bl="${b}" aria-pressed="${Math.abs(b-S.bl)<.01}">${U.m?fx(b*25.4,0)+' mm':b+'″'}${b===20.79?' Stgw 90':''}</button>`).join('')+`<button type="button" class="chip small" data-bl="ref" aria-pressed="${Math.abs(S.load.bl-S.bl)<.01}">wie Hersteller</button>`;
- // Scheibe
- fillSelect($('#selTarget'),Object.keys(TARGETS).map(k=>({v:k,t:TARGETS[k].name})),S.target);
- $('#ringTools').hidden=S.target!=='ring';
- fillSelect($('#selRing'),Object.keys(RINGS).map(k=>({v:k,t:RINGS[k].name})),S.ring);
- $('#ringCustom').hidden=S.ring!=='custom';$('#inR1').value=S.r1;$('#inR10').value=S.r10;
- // Zero
- const zr=$('#zRange');zr.min=5;zr.max=U.m?600:650;zr.step=1;
- $('#zUnit').textContent=U.dU();
- $('#storeNote').textContent=Store.mode==='cookie'?'Daten liegen 24 h in Cookies dieses Browsers.':Store.mode==='local'?'Cookies hier blockiert: Daten liegen 24 h im Browser-Speicher.':'Speichern hier nicht möglich: Daten gehen beim Schliessen verloren.';
- renderVCalc();
-}
-function renderVCalc(){
- const L=S.load,k=calK(S.cal),f=vFactor(k,L.bl,S.bl),est=L.mv*f,mv=effMv();
- const E=w=>.5*(L.w/1000)*w*w;
- const pct=(f-1)*100;
- let h=`<div>Hersteller: <b>${fx(U.vel(L.mv),0)} ${U.velU()}</b> bei ${fx(U.len(L.bl),U.m?0:1)} ${U.lenU()}, Energie <b>${thou(U.en(E(L.mv)))} ${U.enU()}</b></div>`;
- h+=`<div>Geschätzt für ${fx(U.len(S.bl),U.m?0:1)} ${U.lenU()}: <b>${fx(U.vel(est),0)} ${U.velU()}</b> (${sgn(pct,1)} %), <b>${thou(U.en(E(est)))} ${U.enU()}</b> <span class="est">Schätzung</span></div>`;
- if(S.meas)h+=`<div>Verwendet: gemessene v0 <b>${fx(U.vel(mv),0)} ${U.velU()}</b>, <b>${thou(U.en(E(mv)))} ${U.enU()}</b></div>`;
- h+=`<div style="color:var(--muted)">Modell: Faktor 1 − 0.656·e^(−L/${k}) relativ zum Herstellerlauf. Ergibt für 5.56 rund −8 % bei 12.5″, −13 % bei 10.3″, −21 % bei 7.5″ ab 20″, deckungsgleich mit den Werten von LETHAL Corp. Streuung je Lauf und Los ±3 %.</div>`;
- $('#vCalc').innerHTML=h;
- $('#outSH').textContent=fx(U.len(S.rtb+S.mount),U.m?1:2)+' '+U.lenU();
- $('#outSH2').textContent=U.m?fx(S.rtb+S.mount,2)+' in':fx((S.rtb+S.mount)*25.4,1)+' mm';
-}
-
-let LAST=null;
-function renderResults(){
- const zd=Math.round(U.dist(S.zero));
- if(document.activeElement!==$('#zNum'))$('#zNum').value=zd;
- $('#zRange').value=zd;
- $('#zChips').innerHTML=[10,25,35,50,100,200,300].map(v=>`<button type="button" class="chip" data-z="${v}" aria-pressed="${v===zd}">${v}</button>`).join('');
- const pool=[...new Set([...DPOOL.filter(d=>d<=(U.m?1000:1100)),...S.extra[S.units],...S.dist[S.units]])].sort((a,b)=>a-b);
- const sel=new Set(S.dist[S.units]);
- $('#uDist2').textContent='in '+U.dU();
- $('#distSum').textContent=S.dist[S.units].slice().sort((a,b)=>a-b).join(' · ')+' '+U.dU();
- const EYE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',EYEOFF='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><path d="M4 4l16 16"/></svg>';
- $('#cmpBar').innerHTML=`<span class="lbl">Varianten</span>`+VARS.map(v=>{const act=v.id===S.av;const z=act?S.zero:v.st.zero;return `<span class="vchip${act?' act on':(v.vis?' on':'')}"><button type="button" data-va="${v.id}" title="${act?'Wird gerade bearbeitet':'Zum Bearbeiten wählen'}"><i style="background:${SCREEN.ser(v.ci)}"></i>${v.label} · ${fx(U.dist(z),0)} ${U.dU()}</button>${act?'':`<button type="button" class="vx" data-vv="${v.id}" aria-pressed="${v.vis}" aria-label="Variante ${v.label} ${v.vis?'ausblenden':'einblenden'}" title="${v.vis?'Ausblenden':'Einblenden'}">${v.vis?EYE:EYEOFF}</button>`}${VARS.length>1?`<button type="button" class="vx" data-vd="${v.id}" aria-label="Variante ${v.label} löschen" title="Löschen">×</button>`:''}</span>`;}).join('');
- const nVis=1+VARS.filter(v=>v.id!==S.av&&v.vis).length;
- $('#btnPdf').textContent=nVis>1?'PDF Vergleich':'PDF erstellen';
- $('#zEq').textContent='= '+(U.m?fx(S.zero/YD,0)+' yd':fx(S.zero,0)+' m');
- $('#dChips').innerHTML=pool.map(d=>`<button type="button" class="chip" data-d="${d}" aria-pressed="${sel.has(d)}">${d}</button>`).join('');
- const R=series();LAST=R;const c=R.list[0].res;
- // Statistik
- let st='';
- if(!c.ok)st=`<span class="err">${esc(c.err)}</span>`;
- else{
-  const nd=c.near!=null&&Math.abs(c.near-S.zero)>1.5?c.near:null,fd=c.far!=null&&Math.abs(c.far-S.zero)>1.5?c.far:null;
-  if(nd!=null)st+=`<span class="stat" title="Hier steigt die Kugel durch die Visierlinie"><span>1. Zero, Kugel steigt durch Visierlinie</span><b>${fx(U.dist(nd),0)} ${U.dU()}</b> <button type="button" data-setz="${fx(U.dist(nd),0)}">übernehmen</button></span>`;
-  if(fd!=null)st+=`<span class="stat" title="Nach dem höchsten Punkt fällt die Kugel hier wieder auf die Visierlinie"><span>2. Zero, Kugel fällt wieder auf Visierlinie</span><b>${fx(U.dist(fd),0)} ${U.dU()}</b> <button type="button" data-setz="${fx(U.dist(fd),0)}">übernehmen</button></span>`;
-  if(fd==null&&c.far==null)st+=`<span class="stat"><span>2. Zero</span><b>weiter als ${fx(U.dist(R.xMax),0)} ${U.dU()}</b></span>`;
-  st+=`<span class="stat" title="Höchster Punkt der Flugbahn über der Visierlinie"><span>Höchster Punkt</span><b>${sgn(U.drop(c.apex.y),1)} ${U.dropU()}</b><span>bei ${fx(U.dist(c.apex.x),0)} ${U.dU()}</span></span>`;
-  const sp=vSpread(c,R.dm);if(sp)st+=`<span class="stat" title="Höchster minus tiefster Treffer über die gewählten Distanzen"><span>Differenz hoch bis tief</span><b>${fx(U.drop(sp.d),1)} ${U.dropU()}</b><span>(${sgn(U.drop(sp.hi),1)} / ${sgn(U.drop(sp.lo),1)})</span></span>`;
-  st+=`<span class="stat"><span>v0</span><b>${fx(U.vel(R.list[0].P.mv),0)} ${U.velU()}</b></span>`;
- }
- $('#zStats').innerHTML=st;
- // Legenden
- const leg=R.list.map(s=>`<span><i style="background:${SCREEN.ser(s.ci)}"></i>${esc(vl(s))}</span>`).join('');
- $('#legendT').innerHTML=R.list.length>1?leg:`<span class="hint">Zahlen = Distanz in ${U.dU()}. Pfeil = Treffer ausserhalb der Ansicht.</span>`;
- $('#legendG').innerHTML=leg;
- $('#tgtHost').innerHTML=targetSVG(SCREEN,R.list,R.dm);
- $('#graphHost').innerHTML=graphSVG(SCREEN,R.list,R.dm);
- bindHover();
- renderTable(R);renderSnaps(R);
-}
-function corr(y,m){const a=-y/m;return S.angle==='mrad'?a*1000:a*3437.75;}
-function renderTable(R){
- const c=R.list[0].res;
- if(!c.ok){$('#tblHost').innerHTML='';return;}
- const zr=zoneRanges(c,R.xMax);
- const au=S.angle==='mrad'?'MRAD':'MOA';
- $('#tblNote').textContent=`Korrektur: positiv = höher halten oder hochdrehen.`;
- let h=`<table class="tbl"><thead><tr><th>Distanz ${U.dU()}</th><th>Treffpunkt ${U.dropU()}</th><th>Korrektur ${au}</th><th>v ${U.velU()}</th><th>Energie ${U.enU()}</th><th>Flugzeit s</th></tr></thead><tbody>`;
- const rows=R.dm.slice();if(!rows.some(o=>Math.abs(o.m-S.zero)<.5))rows.push({d:Math.round(U.dist(S.zero)),m:S.zero,z:true});rows.sort((a,b)=>a.m-b.m);
- rows.forEach(o=>{const y=at(c.y,o.m),v=at(c.v,o.m),t=at(c.t,o.m);
-  if(y==null){h+=`<tr><td>${o.d}</td><td colspan="5" style="text-align:left;color:var(--muted)">ausser Reichweite</td></tr>`;return;}
-  const inZ=y>=zr.lo&&y<=zr.hi;const isZ=Math.abs(o.m-S.zero)<.5;
-  h+=`<tr class="${isZ?'z':''}"><td>${o.d}${isZ?' · Zero':''}</td><td class="${inZ?'in':'out'}">${sgn(U.drop(y),1)}</td><td>${o.m>0?sgn(corr(y,o.m),S.angle==='mrad'?1:1):''}</td><td>${fx(U.vel(v),0)}</td><td>${thou(U.en(.5*c.w/1000*v*v))}</td><td>${fx(t,3)}</td></tr>`;});
- $('#tblHost').innerHTML=h+'</tbody></table>';
-}
-function vSpread(res,dm){if(!res.ok)return null;const ys=dm.map(o=>at(res.y,o.m)).filter(y=>y!=null);if(!ys.length)return null;const hi=Math.max(...ys),lo=Math.min(...ys);return{d:hi-lo,hi,lo};}
-function renderSnaps(R){
- if(R.list.length<2){$('#snapHost').innerHTML=`<div class="empty">Noch kein Vergleich. Tippe auf «Neue Variante»: die aktuelle Einstellung wird als Variante kopiert, du änderst danach die Kopie (z. B. Zero 25 m auf 50 m) und siehst beide nebeneinander.</div>`;$('#cmpHost').innerHTML='';return;}
- $('#snapHost').innerHTML='';
- const vis=R.list.slice().sort((a,b)=>a.name.localeCompare(b.name));
- let h=`<table class="tbl"><thead><tr><th>Distanz ${U.dU()}</th>${vis.map(v=>`<th><span class="dot" style="background:${SCREEN.ser(v.ci)}"></span>${esc(v.name)} · Zero ${fx(U.dist(v.P.zero),0)} · ${U.dropU()}</th>`).join('')}</tr></thead><tbody>`;
- const {hi,lo}=curTarget();
- R.dm.forEach(o=>{h+=`<tr><td>${o.d}</td>${vis.map(v=>{const y=v.res.ok?at(v.res.y,o.m):null;return y==null?'<td>·</td>':`<td class="${y>=lo&&y<=hi?'in':'out'}">${sgn(U.drop(y),1)}</td>`;}).join('')}</tr>`;});
- h+=`<tr class="z"><td><b>Differenz</b> hoch bis tief</td>${vis.map(v=>{const sp=vSpread(v.res,R.dm);return `<td><b>${sp?fx(U.drop(sp.d),1)+' '+U.dropU():'·'}</b></td>`;}).join('')}</tr>`;
- h+=`<tr><td>2. Zero</td>${vis.map(v=>`<td>${v.res.ok&&v.res.far!=null?fx(U.dist(v.res.far),0)+' '+U.dU():'·'}</td>`).join('')}</tr>`;
- h+=`<tr><td>Höchster Punkt</td>${vis.map(v=>`<td>${v.res.ok?sgn(U.drop(v.res.apex.y),1):'·'}</td>`).join('')}</tr>`;
- $('#cmpHost').innerHTML=h+'</tbody></table>';
-}
-function bindHover(){
- const svg=$('#graphHost svg');if(!svg||!GMAP)return;const area=svg.querySelector('#hvArea'),line=svg.querySelector('#hvLine');
- const mv=e=>{const r=svg.getBoundingClientRect();const pt=(e.touches?e.touches[0]:e);const x=(pt.clientX-r.left)/r.width*GMAP.W;const d=Math.max(0,Math.min(GMAP.xMaxD,(x-GMAP.ml)/GMAP.pw*GMAP.xMaxD));
-  line.setAttribute('x1',GMAP.X(d));line.setAttribute('x2',GMAP.X(d));line.setAttribute('visibility','visible');
-  const m=U.toM(d);$('#readout').innerHTML=`<span>${fx(d,0)} ${U.dU()}</span>`+LAST.list.map(s=>{const y=s.res.ok?at(s.res.y,m):null;return `<span style="color:${SCREEN.ser(s.ci)}">${esc(vl(s))} ${y==null?'·':sgn(U.drop(y),1)+' '+U.dropU()}</span>`;}).join('');};
- area.addEventListener('mousemove',mv);area.addEventListener('touchmove',e=>{mv(e);},{passive:true});area.addEventListener('mouseleave',()=>line.setAttribute('visibility','hidden'));
-}
-function full(){renderSetup();renderResults();persist();}
-function results(){renderVCalc();renderResults();persist();}
-
-/* ---------- Ereignisse ---------- */
-function selectLoad(cal,id){S.cal=cal;const l=findLoad(cal,id);if(l){S.loadId=l.id;S.load={name:l.name,w:l.w,mv:l.mv,bl:l.bl,bc:l.bc,model:l.model};S.mod=false;}}
-$('#segUnits').addEventListener('click',e=>{const v=e.target.dataset.v;if(!v||v===S.units)return;S.units=v;S.zero=U.toM(Math.round(U.dist(S.zero)));full();});
-$('#segAngle').addEventListener('click',e=>{const v=e.target.dataset.v;if(!v)return;S.angle=v;setSeg('segAngle',v);results();});
-$('#selCal').addEventListener('change',e=>{const cal=e.target.value;if(cal==='custom'){S.cal='custom';if(CUSTOM.length)selectLoad('custom',CUSTOM[0].id);else{S.loadId='';}}else selectLoad(cal,LIB.find(c=>c.id===cal).loads[0].id);full();});
-$('#selLoad').addEventListener('change',e=>{selectLoad(S.cal,e.target.value);full();});
-function bindNum(id,fn){$(id).addEventListener('input',e=>{const v=num(e.target.value);if(!isFinite(v))return;fn(v);results();});$(id).addEventListener('change',()=>full());}
-bindNum('#inW',v=>{S.load.w=U.toW(v);S.mod=true;});
-bindNum('#inBC',v=>{if(v>0){S.load.bc=v;S.mod=true;}});
-bindNum('#inV',v=>{if(v>0){S.load.mv=U.toVel(v);S.mod=true;}});
-bindNum('#inBLref',v=>{if(v>0){S.load.bl=U.toIn(v);S.mod=true;}});
-bindNum('#inBL',v=>{if(v>0)S.bl=U.toIn(v);});
-bindNum('#inVm',v=>{if(v>0)S.vMeas=U.toVel(v);});
-bindNum('#inRtb',v=>{S.rtb=U.toIn(v);S.rtbP='free';$('#selRtb').value='free';});
-bindNum('#inMount',v=>{S.mount=U.toIn(v);S.mountP='free';$('#selMount').value='free';});
-bindNum('#inAlt',v=>{S.alt=U.toAlt(v);});
-bindNum('#inTemp',v=>{S.temp=U.toTemp(v);});
-bindNum('#inOff',v=>{S.off=U.toOff(v);});
-$('#selModel').addEventListener('change',e=>{S.load.model=e.target.value;S.mod=true;full();});
-$('#chkMeas').addEventListener('change',e=>{S.meas=e.target.checked;if(S.meas)S.vMeas=Math.round(effMvEst());full();});
-function effMvEst(){return S.load.mv*vFactor(calK(S.cal),S.load.bl,S.bl);}
-$('#blChips').addEventListener('click',e=>{const b=e.target.closest('[data-bl]');if(!b)return;S.bl=b.dataset.bl==='ref'?S.load.bl:+b.dataset.bl;full();});
-$('#selRtb').addEventListener('change',e=>{S.rtbP=e.target.value;const r=RTB.find(r=>r.id===S.rtbP);if(r&&r.v)S.rtb=r.v;full();});
-$('#selMount').addEventListener('change',e=>{S.mountP=e.target.value;const r=MOUNTS.find(r=>r.id===S.mountP);if(r&&r.v)S.mount=r.v;full();});
-$('#btnSaveLoad').addEventListener('click',()=>{const n=$('#inCustName').value.trim()||(S.load.name+' (eigene)');const id='c'+Date.now().toString(36);
- CUSTOM.push({id,name:n,w:S.load.w,mv:S.load.mv,bl:S.load.bl,bc:S.load.bc,model:S.load.model,k:calK(S.cal),note:'Eigene Laborierung.'});
- $('#inCustName').value='';selectLoad('custom',id);full();toast('Laborierung gespeichert');});
-$('#btnDelLoad').addEventListener('click',()=>{CUSTOM=CUSTOM.filter(l=>l.id!==S.loadId);if(CUSTOM.length)selectLoad('custom',CUSTOM[0].id);else selectLoad('556','sp-ds1-41');full();});
-function setZero(d){d=Math.max(1,Math.min(U.m?1500:1650,Math.round(d)));S.zero=U.toM(d);results();}
-$('#zRange').addEventListener('input',e=>setZero(+e.target.value));
-$('#zNum').addEventListener('input',e=>{const v=num(e.target.value);if(v>=1)setZero(v);});
-$('#zNum').addEventListener('keydown',e=>{if(e.key==='ArrowUp'){e.preventDefault();setZero(U.dist(S.zero)+(e.shiftKey?5:1));$('#zNum').value=Math.round(U.dist(S.zero));}if(e.key==='ArrowDown'){e.preventDefault();setZero(U.dist(S.zero)-(e.shiftKey?5:1));$('#zNum').value=Math.round(U.dist(S.zero));}});
-$('#zMinus').addEventListener('click',()=>setZero(Math.round(U.dist(S.zero))-1));
-$('#zPlus').addEventListener('click',()=>setZero(Math.round(U.dist(S.zero))+1));
-$('#zChips').addEventListener('click',e=>{const b=e.target.closest('[data-z]');if(b)setZero(+b.dataset.z);});
-$('#zStats').addEventListener('click',e=>{const b=e.target.closest('[data-setz]');if(b)setZero(+b.dataset.setz);});
-$('#dChips').addEventListener('click',e=>{const b=e.target.closest('[data-d]');if(!b)return;const d=+b.dataset.d;const a=S.dist[S.units];const i=a.indexOf(d);if(i>-1){if(a.length>1)a.splice(i,1);}else a.push(d);results();});
-function addDist(){const v=Math.round(num($('#dAdd').value));if(!(v>0&&v<=2500))return;if(!S.extra[S.units].includes(v))S.extra[S.units].push(v);if(!S.dist[S.units].includes(v))S.dist[S.units].push(v);$('#dAdd').value='';results();}
-$('#dAddBtn').addEventListener('click',addDist);$('#dAdd').addEventListener('keydown',e=>{if(e.key==='Enter')addDist();});
-function toggleSet(open){const p=$('#setPanel');p.hidden=open===undefined?!p.hidden:!open;$('#openDist').textContent=p.hidden?'ändern':'schliessen';}
-$('#openDist').addEventListener('click',()=>toggleSet());
-document.querySelector('.presets').addEventListener('click',e=>{const p=e.target.dataset.preset;if(!p)return;S.dist[S.units]=DPRESET[p].slice();results();});
-$('#selTarget').addEventListener('change',e=>{S.target=e.target.value;full();});
-$('#selRing').addEventListener('change',e=>{S.ring=e.target.value;full();});
-bindNum('#inR1',v=>{if(v>1)S.r1=v;});bindNum('#inR10',v=>{if(v>0)S.r10=Math.min(v,S.r1*.8);});
-$('#btnSnap').addEventListener('click',()=>{
- if(VARS.length>=6){toast('Maximal 6 Varianten. Lösche zuerst eine.');return;}
- syncActive();const used=new Set(VARS.map(v=>v.ci));let ci=0;while(used.has(ci))ci++;
- const label='ABCDEF'.split('').find(l=>!VARS.some(v=>v.label===l));
- const v={id:'v'+Date.now().toString(36),label,ci,vis:true,st:pickV(S)};VARS.push(v);S.av=v.id;full();
- toast(`Variante ${label} angelegt. Du bearbeitest jetzt ${label}.`);});
-$('#cmpBar').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
- if(b.dataset.va&&b.dataset.va!==S.av){syncActive();const v=VARS.find(v=>v.id===b.dataset.va);v.vis=true;S.av=v.id;Object.assign(S,clone(v.st));full();}
- if(b.dataset.vv){const v=VARS.find(v=>v.id===b.dataset.vv);v.vis=!v.vis;results();}
- if(b.dataset.vd){const v=VARS.find(v=>v.id===b.dataset.vd);VARS=VARS.filter(x=>x.id!==v.id);if(v.id===S.av){S.av=VARS[0].id;Object.assign(S,clone(VARS[0].st));}full();toast(`Variante ${v.label} gelöscht`);}});
-document.querySelectorAll('.help').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const t=$('#help-'+b.dataset.help);const open=t.hidden;t.hidden=!open;b.setAttribute('aria-expanded',String(open));}));
-let wipeArm=false;
-$('#btnWipe').addEventListener('click',()=>{const b=$('#btnWipe');
- if(!wipeArm){wipeArm=true;b.textContent='Wirklich alles löschen?';b.classList.add('armed');setTimeout(()=>{wipeArm=false;b.textContent='Daten löschen';b.classList.remove('armed');},4000);return;}
- Store.wipe();S=defaults();selectLoad('556','sp-ds1-41');VARS=[];CUSTOM=[];ensureVars();wipeArm=false;b.textContent='Daten löschen';b.classList.remove('armed');full();Store.wipe();toast('Alle gespeicherten Daten gelöscht');});
-$('#btnPdf').addEventListener('click',()=>exportPDF(VARS.some(v=>v.id!==S.av&&v.vis)?'compare':'single'));
-
-/* ---------- PDF ---------- */
-let DL=null;
-(async()=>{try{if(window.claude&&window.claude.use)DL=await window.claude.use('downloads');}catch(e){DL=null;}})();
-function svgPng(svg,w,h,scale){return new Promise((res,rej)=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=Math.round(w*scale);c.height=Math.round(h*scale);const x=c.getContext('2d');x.fillStyle='#FFFFFF';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/png'));};img.onerror=rej;img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);});}
-const hexRgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
-const pdfTxt=s=>String(s).replace(/−/g,'-').replace(/″/g,' in').replace(/’/g,"'").replace(/[^\x20-\xFF·]/g,'');
-async function offerFile(name,blob){
- if(DL){try{await DL.save({filename:name,data:blob});toast('PDF gespeichert');}catch(e){if(e&&e.code==='declined')return;toast('Speichern hier nicht möglich ('+((e&&e.code)||'Fehler')+').');}return;}
- try{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2000);toast('PDF erstellt');}catch(e){toast('Download nicht möglich.');}
-}
-function pdfSeries(mode){
- const R=series();
- if(mode!=='compare'){R.list=[R.list[0]];R.list[0].name='';}
- R.ord=R.list.slice().sort((a,b)=>a.name.localeCompare(b.name));return R;
-}
-async function exportPDF(mode){
- if(!window.jspdf){toast('PDF-Bibliothek nicht geladen. Internetverbindung prüfen.');return;}
- toast('PDF wird erstellt …');
- try{
- const R=pdfSeries(mode);const C=PRINTC;const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:'a4'});
- const M=14,PW=210-2*M,PH=297;let y=16;
- const tc=h=>{const [r,g,b]=hexRgb(h);doc.setTextColor(r,g,b);};
- const INK='#161B21',MUT='#5A646F';
- doc.setFont('helvetica','bold');doc.setFontSize(20);tc(INK);doc.text('ZeroLab',M,y);
- doc.setFont('helvetica','normal');doc.setFontSize(9);tc(MUT);
- const now=new Date();doc.text(pdfTxt(`${mode==='compare'?'Vergleich':'Einzelauswahl'} · ${now.toLocaleDateString('de-CH')} ${now.toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'})}`),210-M,y,{align:'right'});
- y+=7;
- const {T,z}=curTarget();
- tc(INK);doc.text(pdfTxt(`Scheibe: ${T.name}${S.target==='ring'?' ('+ringGeo().name+')':''} · Haltepunkt: Mitte ${z.label} · Umgebung: ${fx(U.alt(S.alt),0)} ${U.altU()}, ${fx(U.temp(S.temp),0)} ${U.tempU()}`),M,y);y+=6;
- const O=R.ord;
- O.forEach(s=>{const [r,g,b]=hexRgb(C.ser(s.ci));doc.setFillColor(r,g,b);doc.circle(M+1.6,y-1.2,1.6,'F');
-  doc.setFont('helvetica','bold');tc(C.ser(s.ci));doc.text(pdfTxt(`${s.name?'Variante '+s.name:'Einstellung'} · Zero ${fx(U.dist(s.P.zero),0)} ${U.dU()}`),M+5,y);
-  doc.setFont('helvetica','normal');tc(INK);const st=s.active?S:s.st;
-  const lauf=st.meas?'v0 gemessen':`Lauf ${fx(U.len(st.bl),U.m?0:1)} ${U.lenU()} (v0 geschätzt)`;
-  doc.text(pdfTxt(`${s.desc} · ${lauf}`),M+5,y+4);
-  if(s.res.ok){tc(MUT);doc.text(pdfTxt(`1. Zero ${s.res.near!=null?fx(U.dist(s.res.near),0):'-'} · 2. Zero ${s.res.far!=null?fx(U.dist(s.res.far),0):'-'} ${U.dU()} · Höchster Punkt ${sgn(U.drop(s.res.apex.y),1)} ${U.dropU()} bei ${fx(U.dist(s.res.apex.x),0)} ${U.dU()}`),M+5,y+8);}
-  y+=13;});
- /* Flugbahn */
- const GW=860,GH=380;const gpng=await svgPng(graphSVG(C,R.list,R.dm,{px:1,w:GW,h:GH,bg:1}),GW,GH,2.2);
- const gh=PW*GH/GW;doc.setFont('helvetica','bold');doc.setFontSize(10);tc(INK);doc.text('Flugbahn zur Visierlinie',M,y+1);y+=3;
- doc.addImage(gpng,'PNG',M,y,PW,gh);y+=gh+6;
- /* Scheiben je Variante, nebeneinander, darunter Tabelle */
- const per=O.length===1?1:Math.min(3,O.length),gapX=7;
- const colW=O.length===1?84:(PW-gapX*(per-1))/per;
- const au=S.angle==='mrad'?'MRAD':'MOA';
- const {hi,lo}=curTarget();
- const imgs=[];
- for(const s of O){const svg=targetSVG(C,[s],R.dm,{px:600,bg:1});const vb=svg.match(/viewBox="([^"]+)"/)[1].split(' ').map(Number);const asp=vb[3]/vb[2];imgs.push({png:await svgPng(svg,600,600*asp,2.2),asp});}
- const rowLH=4.1,tblH=6+(R.dm.length+1)*rowLH+1;
- for(let r0=0;r0<O.length;r0+=per){
-  const row=O.slice(r0,r0+per);
-  const imgH=Math.min(Math.max(...row.map((s,j)=>colW*imgs[r0+j].asp)),O.length===1?115:95);
-  const rowH=7+imgH+4+tblH+4;
-  if(y+rowH>PH-14){doc.addPage();y=16;}
-  row.forEach((s,j)=>{
-   const x=M+j*(colW+gapX),im=imgs[r0+j];
-   const col=C.ser(s.ci);const [r,g,b]=hexRgb(col);
-   doc.setFillColor(r,g,b);doc.rect(x,y,colW,1.2,'F');
-   doc.setFont('helvetica','bold');doc.setFontSize(10.5);tc(col);
-   doc.text(pdfTxt(`${s.name?'Variante '+s.name:'Einstellung'} · Zero ${fx(U.dist(s.P.zero),0)} ${U.dU()}`),x,y+5.6);
-   let iw=colW,ih=colW*im.asp;if(ih>imgH){ih=imgH;iw=ih/im.asp;}
-   doc.addImage(im.png,'PNG',x+(colW-iw)/2,y+7.5,iw,ih);
-   let ty=y+7.5+imgH+4;
-   const cw=[colW*.3,colW*.36,colW*.34];const cx=[x+cw[0]-1,x+cw[0]+cw[1]-1,x+colW-1];
-   doc.setFont('helvetica','bold');doc.setFontSize(7);tc(MUT);
-   [`Distanz ${U.dU()}`,`Treffer ${U.dropU()}`,`${au}`].forEach((h,k)=>doc.text(pdfTxt(h),cx[k],ty,{align:'right'}));
-   doc.setDrawColor(r,g,b);doc.setLineWidth(.4);doc.line(x,ty+1.2,x+colW,ty+1.2);
-   doc.setFont('courier','normal');doc.setFontSize(8);
-   R.dm.forEach((o,ri)=>{ty+=rowLH;const yy=s.res.ok?at(s.res.y,o.m):null;
-    if(ri%2===0){doc.setFillColor(243,244,246);doc.rect(x,ty-2.9,colW,rowLH,'F');}
-    tc(INK);doc.text(String(o.d),cx[0],ty,{align:'right'});
-    if(yy==null){tc(MUT);doc.text('-',cx[1],ty,{align:'right'});doc.text('-',cx[2],ty,{align:'right'});return;}
-    tc(yy>=lo&&yy<=hi?'#2C7A4C':'#B23528');doc.text(sgnA(U.drop(yy),1),cx[1],ty,{align:'right'});
-    tc(INK);doc.text(sgnA(corr(yy,o.m),1),cx[2],ty,{align:'right'});});
-   const sp=vSpread(s.res,R.dm);ty+=rowLH+.6;doc.setDrawColor(r,g,b);doc.setLineWidth(.3);doc.line(x,ty-3.3,x+colW,ty-3.3);
-   doc.setFont('helvetica','bold');doc.setFontSize(7.5);tc(INK);doc.text('Differenz hoch bis tief',x+1,ty);
-   doc.setFont('courier','bold');doc.setFontSize(8.5);doc.text(sp?fx(U.drop(sp.d),1)+' '+pdfTxt(U.dropU()):'-',x+colW-1,ty,{align:'right'});doc.setFont('courier','normal');doc.setFontSize(8);
-  });
-  y+=rowH;
- }
- if(O.length>1){
-  const rl=4.6,need=14+(R.dm.length+2)*rl;if(y+need>PH-16){doc.addPage();y=16;}
-  doc.setFont('helvetica','bold');doc.setFontSize(10);tc(INK);doc.text(pdfTxt(`Vergleich Treffpunkt in ${U.dropU()}`),M,y+1);y+=6;
-  const cols=[`Distanz ${U.dU()}`].concat(O.map(s=>'Variante '+s.name+' · '+fx(U.dist(s.P.zero),0)));
-  const cwid=PW/cols.length;
-  doc.setFontSize(7.2);cols.forEach((h,k)=>{tc(k>0&&k<=O.length?C.ser(O[k-1].ci):MUT);doc.text(pdfTxt(h),M+cwid*(k+1)-1.5,y,{align:'right'});});
-  doc.setDrawColor(201,208,215);doc.setLineWidth(.3);doc.line(M,y+1.3,M+PW,y+1.3);
-  doc.setFont('courier','normal');doc.setFontSize(8.5);
-  R.dm.forEach((o,ri)=>{y+=rl;if(ri%2===0){doc.setFillColor(243,244,246);doc.rect(M,y-3.2,PW,rl,'F');}
-   tc(INK);doc.text(String(o.d),M+cwid-1.5,y,{align:'right'});
-   O.forEach((s,k)=>{const yy=s.res.ok?at(s.res.y,o.m):null;tc(yy==null?MUT:(yy>=lo&&yy<=hi?'#2C7A4C':'#B23528'));doc.text(yy==null?'-':sgnA(U.drop(yy),1),M+cwid*(k+2)-1.5,y,{align:'right'});});
-});
-  y+=rl+.6;doc.setDrawColor(201,208,215);doc.line(M,y-3.4,M+PW,y-3.4);doc.setFont('helvetica','bold');doc.setFontSize(7.5);tc(INK);doc.text('Differenz',M+1,y);
-  doc.setFont('courier','bold');doc.setFontSize(8.5);O.forEach((s,k)=>{const sp=vSpread(s.res,R.dm);tc(C.ser(s.ci));doc.text(sp?fx(U.drop(sp.d),1):'-',M+cwid*(k+2)-1.5,y,{align:'right'});});doc.setFont('courier','normal');
-  y+=5;doc.setFont('helvetica','normal');doc.setFontSize(7.5);tc(MUT);doc.text(pdfTxt('Differenz = höchster minus tiefster Treffer der Variante über alle gewählten Distanzen.'),M,y);y+=6;
- }
- doc.setFont('helvetica','normal');doc.setFontSize(7.5);tc(MUT);
- const foot=doc.splitTextToSize(pdfTxt(`Treffer relativ zum Haltepunkt (Mitte ${z.label}), positiv = hoch. Grün = innerhalb ${z.label}, rot = ausserhalb. Korrektur in ${au}, positiv = höher halten. Punktmasse-Modell G1/G7, ebener Schuss, kein Wind. v0 bei kürzerem Lauf ist geschätzt. Richtwerte, mit Beschuss bestätigen.`),PW);
- if(y+foot.length*3.4>PH-8){doc.addPage();y=16;}doc.text(foot,M,y);
- const blob=doc.output('blob');
- await offerFile(`zerolab-${mode==='compare'?'vergleich':'zero-'+fx(U.dist(S.zero),0)+U.dU()}.pdf`,blob);
- }catch(err){console.error(err);toast('PDF konnte nicht erstellt werden.');}
-}
-
-/* ---------- Start ---------- */
-Store.init();
-(function load(){
- const s=Store.get('s');if(s&&typeof s==='object'){S=Object.assign(defaults(),s);if(!s.v||s.v<2){S.dist=defaults().dist;S.v=2;}}
- const v=Store.get('v');if(Array.isArray(v))VARS=v.filter(x=>x&&x.st&&x.st.load);
- const c=Store.get('c');if(Array.isArray(c))CUSTOM=c;
- if(!S.load||!(S.load.bc>0)){const l=findLoad(S.cal,S.loadId);if(l)selectLoad(S.cal,S.loadId);else selectLoad('556','sp-ds1-41');}
-})();
-ensureVars();
-full();
-</script>
 
 </body>
 </html>
